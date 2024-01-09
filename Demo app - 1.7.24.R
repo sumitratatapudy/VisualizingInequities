@@ -3,6 +3,8 @@ library(shiny)
 library(dplyr)
 library(tidyverse)
 
+#Julia was here -- TO REMOVE... v unprofessional!
+
 #load your data file
 data.years.names.substituteR <- read.csv("Template_Inequities_In_Course_Performance.csv") %>% mutate(course.grade = as.numeric(course.grade)) %>% na.omit(data.years.names.substituteR) 
 
