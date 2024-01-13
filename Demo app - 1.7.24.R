@@ -299,7 +299,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+        ) + labs(x = NULL, y = "GPA") + geom_violin(position = position_dodge(0.5), width =
                                                        0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
                                                          labels = c(
                                                            "Not Racially Minoritized",
@@ -337,7 +337,7 @@ Here are some ways to incorporate high structure in your course: "
               y = course.grade,
               fill = as.factor(Gender)
             )
-          ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
                                                          0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
                                                                                                                                                                                             labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
             theme(plot.title = element_text(hjust = 0.5))
@@ -363,7 +363,7 @@ Here are some ways to incorporate high structure in your course: "
                 y = course.grade,
                 fill = as.factor(First_Generation)
               )
-            ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
                                                            0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
                                                              "Not First Generation Student",
                                                              "First Generation Student"
@@ -394,7 +394,7 @@ Here are some ways to incorporate high structure in your course: "
                   fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_boxplot(width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
@@ -421,7 +421,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+        ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
                                                        0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
                                                          labels = c(
                                                            "Not Racially Minoritized",
@@ -458,7 +458,7 @@ Here are some ways to incorporate high structure in your course: "
               y = course.grade,
               fill = as.factor(Gender)
             )
-          ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
                                                          0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
                                                                                                                                                                                             labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
             theme(plot.title = element_text(hjust = 0.5))
@@ -482,7 +482,7 @@ Here are some ways to incorporate high structure in your course: "
                 y = course.grade,
                 fill = as.factor(First_Generation)
               )
-            ) + labs(x = NULL, y = "GPA") + geom_boxplot(position = position_dodge(0.5), width =
+            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
                                                            0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
                                                              "Not First Generation Student",
                                                              "First Generation Student"
@@ -511,7 +511,7 @@ Here are some ways to incorporate high structure in your course: "
                   fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_boxplot(width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
