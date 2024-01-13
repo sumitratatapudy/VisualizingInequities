@@ -3,8 +3,6 @@ library(shiny)
 library(dplyr)
 library(tidyverse)
 
-#Julia was here -- TO REMOVE... v unprofessional!
-
 #load your data file
 data.years.names.substituteR <- read.csv("Template_Inequities_In_Course_Performance.csv") %>% mutate(course.grade = as.numeric(course.grade)) %>% na.omit(data.years.names.substituteR) 
 
@@ -34,8 +32,6 @@ data_tab <- tabPanel(title = "Data",
                        sidebarLayout(
                          sidebarPanel(
                            width = 4,
-                           textInput("name", "Enter your name", value = "Sumitra"),
-                           textOutput("greeting"),
                            sliderInput("year", "Choose year", min= 2001, max=2016, value = c(2010, 2014), sep = ""),
                            selectInput("course", "Choose course", choices = c(unique(data.years.names.substituteR$course)), selected = "CLASS.142"),
                            selectInput("quarter", "Choose quarter", choices = c("None selected", unique(data.years.names.substituteR$course.quarter)), selected = "None selected"),
