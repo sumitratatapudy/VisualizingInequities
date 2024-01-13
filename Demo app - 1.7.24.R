@@ -142,12 +142,7 @@ server <- function(input, output, session) {
   observeEvent(input$logout, {
     shinyjs::alert("Thank you!")
   })
-  
-  #Customized greeting for user
-  output$greeting <- renderText({
-    req(credentials()$user_auth)
-    paste("Hello", input$name, "!")
-  })
+
   
   #Resources and descriptions associated with graphs
   url7 <-
@@ -391,10 +386,10 @@ Here are some ways to incorporate high structure in your course: "
                 aes(
                   x = course.year,
                   y = course.grade,
-                  fill = course.year,
+                  #fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
@@ -508,10 +503,10 @@ Here are some ways to incorporate high structure in your course: "
                 aes(
                   x = course.year,
                   y = course.grade,
-                  fill = course.year,
+                  #fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
