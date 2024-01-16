@@ -7,6 +7,7 @@ library(tidyverse)
 data.years.names.substituteR <-
   read.csv("Template_Inequities_In_Course_Performance.csv") %>% mutate(course.grade = as.numeric(course.grade)) %>% na.omit(data.years.names.substituteR)
 
+
 #Define authentication credentials
 user_base <- tibble::tibble(
   user = c("user1", "user2"),
@@ -22,12 +23,23 @@ login_tab <- tabPanel(title = icon("lock"),
 #UI code
 home_tab <-
   tabPanel(
+    
     title = "Approach towards visualizing inequities",
-    "Systemic inequities are often invisible and challenging to identify.
-                     You are taking a crucial step in working towards mitigating inequities in your classroom just by being here.
-                     Welcome!
-                     [[More goals - Need advice]]"
-  )
+    h4("Systemic inequities are often invisible and challenging to identify. You are taking a crucial step in working towards mitigating inequities in your classroom just by being here. 
+      Welcome!"),
+    strong("What this app is:"),
+    br(),
+    tags$ul(
+      tags$li("This app is intended as a tool for self-reflection: Instructors know their class environment best; this tool aids identification of equitable outcomes persist and provides an opportunity to make changes."), 
+      tags$li("Comparing performance before/after intervention in class by examining outcomes over time/terms.")), 
+    strong("Larger context:"),
+    tags$ul(
+      tags$li("Differences between student groups are due to systemic barriers that present opportunity gaps, not due to inherent differences in abilities."), 
+      tags$li("While you may not have control over the larger systemic issues, your classroom is a space where you could have control to mitigate these differences with thoughtful/reflective pedagogy."),
+      tags$li("It can be intimidating to start. The results from this app can be a way to identify where to focus those efforts. You know your class best, and then you can customize your interventions. ")
+    )  
+    )
+  
 data_tab <- tabPanel(title = "Data",
                      fluidPage(
                        titlePanel("Student grade distributions"),
