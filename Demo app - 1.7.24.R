@@ -7,6 +7,12 @@ library(tidyverse)
 data.years.names.substituteR <-
   read.csv("Template_Inequities_In_Course_Performance.csv") %>% mutate(course.grade = as.numeric(course.grade)) %>% na.omit(data.years.names.substituteR)
 
+#Change Quarters to Fall, Winter, Spring, Summer
+#Not working for some reason- will try and debug
+data.years.names.substituteR$course.quarter <- with(data.years.names.substituteR,
+                                                    factor(course.quarter,
+                                                           levels = 1:4,
+                                                           labels = c("Fall", "Winter", "Spring","Summer")))
 
 #Define authentication credentials
 user_base <- tibble::tibble(
@@ -65,7 +71,10 @@ data_tab <- tabPanel(title = "Data",
                              "Choose quarter",
                              choices = c(
                                "None selected",
-                               unique(data.years.names.substituteR$course.quarter)
+                               "Fall",
+                               "Winter",
+                               "Spring",
+                               "Summer"
                              ),
                              selected = "None selected"
                            ),
