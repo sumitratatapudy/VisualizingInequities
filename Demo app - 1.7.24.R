@@ -7,7 +7,7 @@ library(tidyverse)
 data.years.names.substituteR <-
   read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv")
 
-#just for development WILL REMOVE LATER!: add additional variable
+#just for development WILL REMOVE LATER!: add additional variable (values randomly generated)
 data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
 
 #Define authentication credentials
@@ -88,13 +88,15 @@ data_tab <- tabPanel(title = "Data",
                            ),
                            textOutput("minoritized_how_info"),
                            textOutput("minoritized_how_info2"),
-                           textOutput("minoritized_how_info3")
+                           textOutput("minoritized_how_info3"),
+                           textOutput("minoritized_how_info4") #THIS
                          ),
                          mainPanel(
                            plotOutput("plot1"),
                            textOutput("intervention_info"),
                            textOutput("intervention_info2"),
                            textOutput("intervention_info3"),
+                           textOutput("intervention_info4"), #THIS
                            uiOutput("url1"),
                            uiOutput("url2"),
                            uiOutput("url3"),
@@ -103,7 +105,10 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url3.2"),
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
-                           uiOutput("url3.3")
+                           uiOutput("url3.3"),
+                           uiOutput("url1.4"), #THESE
+                           uiOutput("url2.4"),
+                           uiOutput("url3.4")
                          )
                          
                          
@@ -289,6 +294,43 @@ Here are some ways to incorporate high structure in your course: "
   })
   
   
+  ##ADDITIONAL VARIABLE
+  reactive_function4 <- eventReactive(input$minoritized_how, {
+    req(input$minoritized_how == "Additional Variable")
+  })
+  
+  output$minoritized_how_info4 <- renderText({
+    reactive_function4()
+    paste(
+      "[Give a definition of your variable here]
+"
+    )
+  })
+  
+  output$intervention_info4 <- renderText({
+    reactive_function4()
+    paste(
+      "[Insert a summary of suggestions/interventions and some links below]: "
+    )
+  })
+  #NOTE -- link to something other than urls 7,8,9... create new urls relevant to your additional variable
+  output$url1.4 <- renderUI({
+    reactive_function4()
+    tagList(url7)
+    
+  })
+  
+  output$url2.4 <- renderUI({
+    reactive_function4()
+    tagList(url8)
+    
+  })
+  
+  output$url3.4 <- renderUI({
+    reactive_function4()
+    tagList(url9)
+    
+  })  
   
   #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   output$plot1 <- renderPlot({
