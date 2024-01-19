@@ -7,6 +7,9 @@ library(tidyverse)
 data.years.names.substituteR <-
   read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv")
 
+#just for development WILL REMOVE LATER!: add additional variable
+data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
+
 #Define authentication credentials
 user_base <- tibble::tibble(
   user = c("user1", "user2"),
@@ -78,7 +81,8 @@ data_tab <- tabPanel(title = "Data",
                                "None selected",
                                "Racially Minoritized",
                                "Binary Gender",
-                               "First Generation Status"
+                               "First Generation Status",
+                               "Additional Variable" #THIS
                              ),
                              selected = "None selected"
                            ),
@@ -286,7 +290,7 @@ Here are some ways to incorporate high structure in your course: "
   
   
   
-  #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected
+  #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   output$plot1 <- renderPlot({
     req(credentials()$user_auth)
     if (input$quarter != "None selected") {
@@ -308,24 +312,24 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(position = position_dodge(0.5), width =
-                                                       0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
-                                                         labels = c(
-                                                           "Not Racially Minoritized",
-                                                           "Racially Minoritized",
-                                                           "Did not indicate"
-                                                         )
-                                                       ) + scale_fill_discrete(
-                                                         name = NULL,
-                                                         labels = c(
-                                                           'Not Racially Minoritized',
-                                                           'Racially Minoritized',
-                                                           'Did not indicate'
-                                                         )
-                                                       ) + ggtitle("Student academic performance") +
+        ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                      0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                           0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
+                                                        labels = c(
+                                                          "Not Racially Minoritized",
+                                                          "Racially Minoritized",
+                                                          "Did not indicate"
+                                                        )
+                                                      ) + scale_fill_discrete(
+                                                        name = NULL,
+                                                        labels = c(
+                                                          'Not Racially Minoritized',
+                                                          'Racially Minoritized',
+                                                          'Did not indicate'
+                                                        )
+                                                      ) + ggtitle("Student academic performance") +
           theme(plot.title = element_text(hjust = 0.5))
-      }
-      
+}
       #Data disaggregated by students gender when no course quarter selected
       else {
         if (input$minoritized_how == "Binary Gender") {
@@ -346,8 +350,14 @@ Here are some ways to incorporate high structure in your course: "
               y = course.grade,
               fill = as.factor(Gender)
             )
-          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                         0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
+          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                        0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
+                                                           "Male", 
+                                                           "Female", 
+                                                           "Did not indicate"
+                                                           )) + scale_fill_discrete(
+                                                             name = NULL,
                                                                                                                                                                                             labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
             theme(plot.title = element_text(hjust = 0.5))
         }
@@ -372,8 +382,9 @@ Here are some ways to incorporate high structure in your course: "
                 y = course.grade,
                 fill = as.factor(First_Generation)
               )
-            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                           0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
+            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                          0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                  0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
                                                              "Not First Generation Student",
                                                              "First Generation Student"
                                                            )) + scale_fill_discrete(
@@ -386,6 +397,40 @@ Here are some ways to incorporate high structure in your course: "
               theme(plot.title = element_text(hjust = 0.5))
           }
           
+          #Data disaggregated by additional variable when no course quarter selected HERE
+          else {
+            if (input$minoritized_how == "Additional Variable") {
+              data.years.names.substitute.subset3 <-
+                data.years.names.substituteR %>%
+                filter(
+                  course == input$course,
+                  course.quarter == input$quarter,
+                  course.year >= input$year[1] &
+                    course.year <= input$year[2]
+                ) %>%
+                select(course.year, Additional_Var, course.grade) %>%
+                na.omit(data.years.names.substitute.subset3)
+              ggplot(
+                data.years.names.substitute.subset3,
+                aes(
+                  x = as.factor(course.year),
+                  y = course.grade,
+                  fill = as.factor(Additional_Var)
+                )
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                            0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                    0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
+                                                              "Group 1",
+                                                              "Group 2"
+                                                            )) + scale_fill_discrete(
+                                                              name = NULL,
+                                                              labels = c(
+                                                                'Group 1',
+                                                                'Group 2'
+                                                              )
+                                                            ) + ggtitle("Student academic performance") +
+                theme(plot.title = element_text(hjust = 0.5))
+            }          
           
           #Data not disaggregated when no course quarter selected
           else {
@@ -403,7 +448,9 @@ Here are some ways to incorporate high structure in your course: "
                   #fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                            0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                    0.2, alpha=0) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
@@ -412,7 +459,7 @@ Here are some ways to incorporate high structure in your course: "
         }
         
       }
-    }
+    }}
     else {
       #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
       if (input$minoritized_how == "Racially Minoritized") {
@@ -430,8 +477,9 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                       0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
+        ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                      0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                              0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
                                                          labels = c(
                                                            "Not Racially Minoritized",
                                                            "Racially Minoritized",
@@ -467,8 +515,9 @@ Here are some ways to incorporate high structure in your course: "
               y = course.grade,
               fill = as.factor(Gender)
             )
-          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                         0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
+          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                        0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
                                                                                                                                                                                             labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
             theme(plot.title = element_text(hjust = 0.5))
         }
@@ -491,8 +540,9 @@ Here are some ways to incorporate high structure in your course: "
                 y = course.grade,
                 fill = as.factor(First_Generation)
               )
-            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                           0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
+            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                          0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                  0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
                                                              "Not First Generation Student",
                                                              "First Generation Student"
                                                            )) + scale_fill_discrete(
@@ -504,6 +554,40 @@ Here are some ways to incorporate high structure in your course: "
                                                            ) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
           }
+          
+          else {
+            #Data disaggregated by students first generation status when specific course quarter selected
+            if (input$minoritized_how == "Additional Variable") {
+              data.years.names.substitute.subset6 <-
+                data.years.names.substituteR %>%
+                filter(
+                  course == input$course,
+                  course.year >= input$year[1] &
+                    course.year <= input$year[2]
+                ) %>%
+                select(course.year, Additional_Var, course.grade) %>%
+                na.omit(data.years.names.substitute.subset6)
+              ggplot(
+                data.years.names.substitute.subset6,
+                aes(
+                  x = as.factor(course.year),
+                  y = course.grade,
+                  fill = as.factor(Additional_Var)
+                )
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                            0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                    0.2, alpha=0) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
+                                                              "Group 1",
+                                                              "Group 2"
+                                                            )) + scale_fill_discrete(
+                                                              name = NULL,
+                                                              labels = c(
+                                                                'Group 1',
+                                                                'Group 2'
+                                                              )
+                                                            ) + ggtitle("Student academic performance") +
+                theme(plot.title = element_text(hjust = 0.5))
+            }          
           
           #Data not disaggregated when specific course quarter selected
           else {
@@ -520,7 +604,9 @@ Here are some ways to incorporate high structure in your course: "
                   #fill = course.year,
                   group = course.year
                 )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
+              ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.75), position = position_dodge(0.5), width =
+                                                            0.2, linetype="dotted") + geom_violin(draw_quantiles = .5, position = position_dodge(0.5), width =
+                                                                                                    0.2, alpha=0) + ggtitle("Student academic performance") +
               theme(plot.title = element_text(hjust = 0.5))
             
           }
@@ -533,6 +619,8 @@ Here are some ways to incorporate high structure in your course: "
       
     }
     
-  })
+  }
+    }) 
 }
+  
 shinyApp(ui = ui, server = server)
