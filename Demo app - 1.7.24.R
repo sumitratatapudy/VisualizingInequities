@@ -7,8 +7,8 @@ library(tidyverse)
 data.years.names.substituteR <-
   read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv")
 
-##just for development WILL REMOVE LATER!: add additional variable (values randomly generated)
-#data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
+# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
+# data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
 
 #Define authentication credentials
 user_base <- tibble::tibble(
@@ -106,9 +106,9 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
                            uiOutput("url3.3")#, #COUGAR (just the comma)
-                           # uiOutput("url1.4"), #COUGAR
-                           # uiOutput("url2.4"), #COUGAR
-                           # uiOutput("url3.4") #COUGAR
+                           #uiOutput("url1.4"), #COUGAR
+                           #uiOutput("url2.4"), #COUGAR
+                           #uiOutput("url3.4") #COUGAR
                          )
                          
                          
@@ -365,19 +365,16 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
-          "Not Racially Minoritized",
-          "Racially Minoritized",
-          "Did not indicate"
-        )) + scale_fill_discrete(
-          name = NULL,
-          labels = c(
-            'Not Racially Minoritized',
-            'Racially Minoritized',
-            'Did not indicate'
-          )
-        ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA") + 
+          ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
+                            name=NULL,
+                            labels = c(
+                              'Not Racially Minoritized',
+                              'Racially Minoritized',
+                              'Did not indicate'
+                            ))
       }
       #Data disaggregated by students gender when no course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
@@ -410,11 +407,15 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male",
-                                                                           "Female",
-                                                                           "Did not indicate")) + scale_fill_discrete(name = NULL,
-                                                                                                                      labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
+                            name=NULL,
+                            labels = c(
+                              'Male',
+                              'Female',
+                              'Did not indicate'
+                            ))
       }
       #Data disaggregated by students first generation status when no course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
@@ -447,14 +448,16 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Not First Generation Student",
-                                                                           "First Generation Student")) + scale_fill_discrete(
-                                                                             name = NULL,
-                                                                             labels = c('Not First Generation Student',
-                                                                                        'First Generation Student')
-                                                                           ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
+                            name=NULL,
+                            labels = c(
+                              'Not First Generation Student',
+                              'First Generation Student'
+                            ))
       }
+      
       # #COUGARS -- Data disaggregated by additional variable when no course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
       #   data.years.names.substitute.subset3 <-
@@ -486,11 +489,14 @@ Here are some ways to incorporate high structure in your course: "
       #     width =
       #       0.2,
       #     alpha = 0
-      #   ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Group 1",
-      #                                                                      "Group 2")) + scale_fill_discrete(name = NULL,
-      #                                                                                                        labels = c('Group 1',
-      #                                                                                                                   'Group 2')) + ggtitle("Student academic performance") +
-      #     theme(plot.title = element_text(hjust = 0.5))
+      #   ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+      #     theme(plot.title = element_text(hjust = 0.5)) +
+      #     scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
+      #                       name=NULL,
+      #                       labels = c(
+      #                         'Group 1',
+      #                         'Group 2'
+      #                       ))
       # }
       
       #Data not disaggregated when no course quarter selected
@@ -552,19 +558,16 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
-          "Not Racially Minoritized",
-          "Racially Minoritized",
-          "Did not indicate"
-        )) + scale_fill_discrete(
-          name = NULL,
-          labels = c(
-            'Not Racially Minoritized',
-            'Racially Minoritized',
-            'Did not indicate'
-          )
-        ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA") + 
+          ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
+                            name=NULL,
+                            labels = c(
+                              'Not Racially Minoritized',
+                              'Racially Minoritized',
+                              'Did not indicate'
+                            ))
       }
       
       #Data disaggregated by students gender when specific course quarter selected
@@ -595,9 +598,15 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
-                                                                                                                                        labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5))+
+          scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
+                            name=NULL,
+                            labels = c(
+                              'Male',
+                              'Female',
+                              'Did not indicate'
+                            ))
       }
       
       #Data disaggregated by students first generation status when specific course quarter selected
@@ -628,13 +637,14 @@ Here are some ways to incorporate high structure in your course: "
           width =
             0.2,
           alpha = 0
-        ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Not First Generation Student",
-                                                                           "First Generation Student")) + scale_fill_discrete(
-                                                                             name = NULL,
-                                                                             labels = c('Not First Generation Student',
-                                                                                        'First Generation Student')
-                                                                           ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
+                            name=NULL,
+                            labels = c(
+                              'Not First Generation Student',
+                              'First Generation Student'
+                            ))
       }
       
       # #COUGAR -- Data disaggregated by additional varaible when specific course quarter selected
@@ -665,11 +675,14 @@ Here are some ways to incorporate high structure in your course: "
       #     width =
       #       0.2,
       #     alpha = 0
-      #   ) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Group 1",
-      #                                                                      "Group 2")) + scale_fill_discrete(name = NULL,
-      #                                                                                                        labels = c('Group 1',
-      #                                                                                                                   'Group 2')) + ggtitle("Student academic performance") +
-      #     theme(plot.title = element_text(hjust = 0.5))
+      #   ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+      #     theme(plot.title = element_text(hjust = 0.5))+
+      #         scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
+      #                           name=NULL,
+      #                           labels = c(
+      #                             'Group 1',
+      #                             'Group 2'
+      #                           ))
       # }
       
       #Data not disaggregated when specific course quarter selected
