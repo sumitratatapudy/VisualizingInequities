@@ -353,7 +353,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -395,7 +395,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Gender)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -436,7 +436,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(First_Generation)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -477,7 +477,7 @@ Here are some ways to incorporate high structure in your course: "
       #       y = course.grade,
       #       fill = as.factor(Additional_Var)
       #     )
-      #   ) + labs(x = NULL, y = "GPA") + geom_violin(
+      #   ) + geom_violin(
       #     draw_quantiles = c(0.25, 0.75),
       #     position = position_dodge(0.5),
       #     width =
@@ -508,10 +508,10 @@ Here are some ways to incorporate high structure in your course: "
             course.year >= input$year[1] &
               course.year <= input$year[2]
           ) %>%
-          ggplot(aes(x = course.year,
+          ggplot(aes(x = as.factor(course.year),
                      y = course.grade,
                      #fill = course.year,
-                     group = course.year)) + labs(x = NULL, y = "GPA") + geom_violin(
+                     group = course.year)) + geom_violin(
                        draw_quantiles = c(0.25, 0.75),
                        position = position_dodge(0.5),
                        width =
@@ -523,7 +523,7 @@ Here are some ways to incorporate high structure in your course: "
                        width =
                          0.2,
                        alpha = 0
-                     ) + ggtitle("Student academic performance") +
+                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
           theme(plot.title = element_text(hjust = 0.5))
         
       }
@@ -546,7 +546,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -586,7 +586,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Gender)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -625,7 +625,7 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(First_Generation)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(
+        ) + geom_violin(
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
@@ -663,7 +663,7 @@ Here are some ways to incorporate high structure in your course: "
       #       y = course.grade,
       #       fill = as.factor(Additional_Var)
       #     )
-      #   ) + labs(x = NULL, y = "GPA") + geom_violin(
+      #   ) + geom_violin(
       #     draw_quantiles = c(0.25, 0.75),
       #     position = position_dodge(0.5),
       #     width =
@@ -691,10 +691,10 @@ Here are some ways to incorporate high structure in your course: "
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
-          ggplot(aes(x = course.year,
+          ggplot(aes(x = as.factor(course.year),
                      y = course.grade,
                      #fill = course.year,
-                     group = course.year)) + labs(x = NULL, y = "GPA") + geom_violin(
+                     group = course.year)) + geom_violin(
                        draw_quantiles = c(0.25, 0.75),
                        position = position_dodge(0.5),
                        width =
@@ -706,7 +706,7 @@ Here are some ways to incorporate high structure in your course: "
                        width =
                          0.2,
                        alpha = 0
-                     ) + ggtitle("Student academic performance") +
+                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
           theme(plot.title = element_text(hjust = 0.5))
         
       }
