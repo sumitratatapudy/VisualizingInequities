@@ -53,29 +53,46 @@ home_tab <-
     )  
     )
   
+
+# creates the data tab
 data_tab <- tabPanel(title = "Data",
                      fluidPage(
                        titlePanel("Student grade distributions"),
                        sidebarLayout(
-                         sidebarPanel(
+                         # the following code sets up the options for dis aggregating data
+                         sidebarPanel( 
                            width = 4,
-                           sliderInput(
+                           
+                           # cougars, the following codes creates a slider to select what years you want 
+                           # to display in the visual. You can use this code as a template to create a 
+                           # similar slider with other variables of interest
+                           sliderInput( 
                              "year",
                              "Choose year",
-                             min = 2001,
-                             max = 2016,
-                             value = c(2010, 2014),
+                             min = 2001, #huskies, update this with the minimum year from your data
+                             max = 2016, #huskies, update this with the maximum year from your data
+                             value = c(2010, 2014), #huskies, sets the initial date range to be displayed
+                             #make sure the years in the line above are found in your data
                              sep = ""
-                           ),
+                           ), 
+                           
+                           # cougars, the following code creates a drop-down to select which course
+                           # you want to visualize
                            selectInput(
                              "course",
                              "Choose course",
                              choices = c(unique(data.years.names.substituteR$course)),
-                             selected = "Course10C"
+                             selected = "Course10C" #huskies, sets the initial course to be displayed
+                             #change the course name in quotations to a course name found in your data
                            ),
-                           selectInput(
+                           
+                           # cougars, creates a drop-down to select which quarter you want to visualize
+                           selectInput( 
                              "quarter",
                              "Choose quarter",
+                             
+                             # huskies, you will need to change the items in the quotations marks in the
+                             # following choices list to match the names in the course.quarter column in your data
                              choices = c(
                                "None selected",
                                "Winter",
@@ -85,10 +102,16 @@ data_tab <- tabPanel(title = "Data",
                              ),
                              selected = "None selected"
                            ),
+                           
+                           # creates a drop-down to select which minoritized group you would like to disaggreagate by
                            selectizeInput(
-                             "minoritized_how",
+                             "minoritized_how", 
                              "Which minoritized group would you like data disggreagated by?",
-                             choices = c(
+                             
+                             # the following code defines the options for disaggregating the data
+                             # huskies, ensure the following list matches column names in your data
+                             # you can also add column names
+                             choices = c( 
                                "None selected",
                                "Racially Minoritized",
                                "Binary Gender",
@@ -102,6 +125,8 @@ data_tab <- tabPanel(title = "Data",
                            textOutput("minoritized_how_info3")#, #COUGAR (comma only)
                            #textOutput("minoritized_how_info4") #COUGAR
                          ),
+                         
+                         # the following code creates the violin plot displayed in the data tab
                          mainPanel(
                            plotOutput("plot1"),
                            textOutput("intervention_info"),
