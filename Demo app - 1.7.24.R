@@ -1,11 +1,21 @@
-#load necessary packages
+##Instructions for modification - see supplemental for details
+# places where the code ....are tagged as #
+# There are two ways to interact with this code
+# You can run the app with your own data #huskies
+# You can add features to the app #cougars
+# use command f to find all the places you need to change
+
+
+# load necessary packages
 library(shiny)
 library(dplyr)
 library(tidyverse)
 
 #load your data file
 data.years.names.substituteR <-
-  read.csv("Template_Inequities_In_Course_Performance.csv") %>% mutate(course.grade = as.numeric(course.grade)) %>% na.omit(data.years.names.substituteR)
+  read.csv("Template_Inequities_In_Course_Performance.csv") %>% #huskies: make sure the text in quotations exactly matches your csv file name
+  mutate(course.grade = as.numeric(course.grade)) %>% #ensures the "course.grade" column is read in as a number
+  na.omit(data.years.names.substituteR) #removes any rows with missing data
 
 #Change Quarters to Fall, Winter, Spring, Summer
 #Not working for some reason- will try and debug
