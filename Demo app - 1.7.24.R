@@ -53,29 +53,46 @@ home_tab <-
     )  
     )
   
+
+# creates the data tab
 data_tab <- tabPanel(title = "Data",
                      fluidPage(
                        titlePanel("Student grade distributions"),
                        sidebarLayout(
-                         sidebarPanel(
+                         # the following code sets up the options for dis aggregating data
+                         sidebarPanel( 
                            width = 4,
-                           sliderInput(
+                           
+                           # cougars, the following codes creates a slider to select what years you want 
+                           # to display in the visual. You can use this code as a template to create a 
+                           # similar slider with other variables of interest
+                           sliderInput( 
                              "year",
                              "Choose year",
-                             min = 2001,
-                             max = 2016,
-                             value = c(2010, 2014),
+                             min = 2001, #huskies, update this with the minimum year from your data
+                             max = 2016, #huskies, update this with the maximum year from your data
+                             value = c(2010, 2014), #huskies, sets the initial date range to be displayed
+                             #make sure the years in the line above are found in your data
                              sep = ""
-                           ),
+                           ), 
+                           
+                           # cougars, the following code creates a drop-down to select which course
+                           # you want to visualize
                            selectInput(
                              "course",
                              "Choose course",
                              choices = c(unique(data.years.names.substituteR$course)),
-                             selected = "Course10C"
+                             selected = "Course10C" #huskies, sets the initial course to be displayed
+                             #change the course name in quotations to a course name found in your data
                            ),
-                           selectInput(
+                           
+                           # cougars, creates a drop-down to select which quarter you want to visualize
+                           selectInput( 
                              "quarter",
                              "Choose quarter",
+                             
+                             # huskies, you will need to change the items in the quotations marks in the
+                             # following choices list to match the names in the course.quarter column in your data
                              choices = c(
                                "None selected",
                                "Winter",
@@ -85,10 +102,16 @@ data_tab <- tabPanel(title = "Data",
                              ),
                              selected = "None selected"
                            ),
+                           
+                           # creates a drop-down to select which minoritized group you would like to disaggreagate by
                            selectizeInput(
-                             "minoritized_how",
+                             "minoritized_how", 
                              "Which minoritized group would you like data disggreagated by?",
-                             choices = c(
+                             
+                             # the following code defines the options for disaggregating the data
+                             # huskies, ensure the following list matches column names in your data
+                             # you can also add column names
+                             choices = c( 
                                "None selected",
                                "Racially Minoritized",
                                "Binary Gender",
@@ -102,6 +125,7 @@ data_tab <- tabPanel(title = "Data",
                            textOutput("minoritized_how_info3")#, #COUGAR (comma only)
                            #textOutput("minoritized_how_info4") #COUGAR
                          ),
+                         
                          mainPanel(
                            plotOutput("plot1"),
                            textOutput("intervention_info"),
@@ -132,6 +156,8 @@ ui <- navbarPage(title = "Visualizing inequities in student performance",
                  id = "tabs",
                  collapsible = TRUE,
                  login_tab)
+
+
 #FUNCTION code
 server <- function(input, output, session) {
   #logout button UI
@@ -144,7 +170,7 @@ server <- function(input, output, session) {
                  ))
   )
   
-  #Providing access to authenticated users to view app UI and data
+  ## Providing access to authenticated users to view app UI and data
   observeEvent(credentials()$user_auth, {
     if (credentials()$user_auth) {
       removeTab("tabs", "login")
@@ -178,7 +204,7 @@ server <- function(input, output, session) {
   })
 
   
-  #Resources and descriptions associated with graphs
+  ## Resources and descriptions associated with graphs
   url7 <-
     a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
   url8 <-
@@ -193,6 +219,8 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info2 <- renderText({
     reactive_function2()
+    # huskies, make sure the text below matches the definition of "racially minoritized"
+    # in your data
     paste(
       "Students who identify as Black, African-American, Latinx, Hawaiian/Pacific Islander and/or American Indian
 "
@@ -232,6 +260,7 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info3 <- renderText({
     reactive_function3()
+    # huskies, make sure the text below matches the definition of gender in your data
     paste(
       "Binary gender is the classification of gender into two distinct forms of masculine and feminine, whether by social system, cultural belief, or both simultaneously
 "
@@ -274,6 +303,7 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info <- renderText({
     reactive_function()
+    # huskies, make sure the text below matches the definition of first generation used in your data
     paste("Students whose parents did not complete a 4-year college or university degree")
   })
   
@@ -341,6 +371,8 @@ Here are some ways to incorporate high structure in your course: "
 #     tagList(url9)
 # 
 #   })
+  
+## The following code creates the violin plot that is rendered above
   
   #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   output$plot1 <- renderPlot({
