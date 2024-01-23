@@ -14,17 +14,11 @@ library(dplyr)
 library(tidyverse)
 
 ## load your data file
-data.years.names.substituteR <-
-  read.csv("Template_Inequities_In_Course_Performance.csv") %>% #huskies: make sure the text in quotations exactly matches your csv file name
-  mutate(course.grade = as.numeric(course.grade)) %>% #ensures the "course.grade" column is read in as a number
-  na.omit(data.years.names.substituteR) #removes any rows with missing data
+data.years.names.substituteR <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
+ 
 
-#Change Quarters to Fall, Winter, Spring, Summer
-#Not working for some reason- will try and debug
-data.years.names.substituteR$course.quarter <- with(data.years.names.substituteR,
-                                                    factor(course.quarter,
-                                                           levels = 1:4,
-                                                           labels = c("Fall", "Winter", "Spring","Summer")))
+# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
+# data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
 
 ## Define authentication credentials
 user_base <- tibble::tibble(
@@ -77,17 +71,17 @@ data_tab <- tabPanel(title = "Data",
                              "course",
                              "Choose course",
                              choices = c(unique(data.years.names.substituteR$course)),
-                             selected = "CLASS.142"
+                             selected = "Course10C"
                            ),
                            selectInput(
                              "quarter",
                              "Choose quarter",
                              choices = c(
                                "None selected",
-                               "Fall",
                                "Winter",
                                "Spring",
-                               "Summer"
+                               "Summer",
+                               "Fall"
                              ),
                              selected = "None selected"
                            ),
@@ -98,19 +92,22 @@ data_tab <- tabPanel(title = "Data",
                                "None selected",
                                "Racially Minoritized",
                                "Binary Gender",
-                               "First Generation Status"
+                               "First Generation Status"#, #COUGARS (comma only)
+                               #"Additional Variable" #COUGARS
                              ),
                              selected = "None selected"
                            ),
                            textOutput("minoritized_how_info"),
                            textOutput("minoritized_how_info2"),
-                           textOutput("minoritized_how_info3")
+                           textOutput("minoritized_how_info3")#, #COUGAR (comma only)
+                           #textOutput("minoritized_how_info4") #COUGAR
                          ),
                          mainPanel(
                            plotOutput("plot1"),
                            textOutput("intervention_info"),
                            textOutput("intervention_info2"),
                            textOutput("intervention_info3"),
+                           #textOutput("intervention_info4"), #COUGAR
                            uiOutput("url1"),
                            uiOutput("url2"),
                            uiOutput("url3"),
@@ -119,7 +116,10 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url3.2"),
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
-                           uiOutput("url3.3")
+                           uiOutput("url3.3")#, #COUGAR (just the comma)
+                           #uiOutput("url1.4"), #COUGAR
+                           #uiOutput("url2.4"), #COUGAR
+                           #uiOutput("url3.4") #COUGAR
                          )
                          
                          
@@ -202,9 +202,10 @@ server <- function(input, output, session) {
   output$intervention_info2 <- renderText({
     reactive_function2()
     paste(
-      "[Insert minoritized race stuff here]: "
+      "[Insert minoritized race stuff here (and replace the links)]: "
     )
   })
+  
   #NOTE -- link to something other than urls 7,8,9... create new urls relevant to race
   output$url1.2 <- renderUI({
     reactive_function2()
@@ -240,9 +241,7 @@ server <- function(input, output, session) {
   output$intervention_info3 <- renderText({
     reactive_function3()
     paste(
-      "[Insert binary gender stuff here]Literature on learning tells us that first-generation students benefit from high structure classes.
-
-Here are some ways to incorporate high structure in your course: "
+      "[Insert binary gender stuff here (and replace the links)]: "
     )
   })
   #NOTE -- link to something other than urls 7,8,9... create new urls relevant to binary gender
@@ -305,8 +304,45 @@ Here are some ways to incorporate high structure in your course: "
   })
   
   
+#   ## COUGARS -- ADDITIONAL VARIABLE
+#   reactive_function4 <- eventReactive(input$minoritized_how, {
+#     req(input$minoritized_how == "Additional Variable")
+#   })
+# 
+#   output$minoritized_how_info4 <- renderText({
+#     reactive_function4()
+#     paste(
+#       "[Give a definition of your variable here]
+# "
+#     )
+#   })
+# 
+#   output$intervention_info4 <- renderText({
+#     reactive_function4()
+#     paste(
+#       "[Insert a summary of suggestions/interventions and some links below]: "
+#     )
+#   })
+#   #NOTE -- link to something other than urls 7,8,9... create new urls relevant to your additional variable
+#   output$url1.4 <- renderUI({
+#     reactive_function4()
+#     tagList(url7)
+# 
+#   })
+# 
+#   output$url2.4 <- renderUI({
+#     reactive_function4()
+#     tagList(url8)
+# 
+#   })
+# 
+#   output$url3.4 <- renderUI({
+#     reactive_function4()
+#     tagList(url9)
+# 
+#   })
   
-  #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected
+  #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   output$plot1 <- renderPlot({
     req(credentials()$user_auth)
     if (input$quarter != "None selected") {
@@ -328,110 +364,181 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(position = position_dodge(0.5), width =
-                                                       0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
-                                                         labels = c(
-                                                           "Not Racially Minoritized",
-                                                           "Racially Minoritized",
-                                                           "Did not indicate"
-                                                         )
-                                                       ) + scale_fill_discrete(
-                                                         name = NULL,
-                                                         labels = c(
-                                                           'Not Racially Minoritized',
-                                                           'Racially Minoritized',
-                                                           'Did not indicate'
-                                                         )
-                                                       ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA") + 
+          ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
+                            name=NULL,
+                            labels = c(
+                              'Not Racially Minoritized',
+                              'Racially Minoritized',
+                              'Did not indicate'
+                            ))
+      }
+      #Data disaggregated by students gender when no course quarter selected
+      else if (input$minoritized_how == "Binary Gender") {
+        data.years.names.substitute.subset2 <-
+          data.years.names.substituteR %>%
+          filter(
+            course == input$course,
+            course.quarter == input$quarter,
+            course.year >= input$year[1] &
+              course.year <= input$year[2]
+          ) %>%
+          select(course.year, Gender, course.grade) %>%
+          na.omit(data.years.names.substitute.subset2)
+        ggplot(
+          data.years.names.substitute.subset2,
+          aes(
+            x = as.factor(course.year),
+            y = course.grade,
+            fill = as.factor(Gender)
+          )
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
+                            name=NULL,
+                            labels = c(
+                              'Male',
+                              'Female',
+                              'Did not indicate'
+                            ))
+      }
+      #Data disaggregated by students first generation status when no course quarter selected
+      else if (input$minoritized_how == "First Generation Status") {
+        data.years.names.substitute.subset3 <-
+          data.years.names.substituteR %>%
+          filter(
+            course == input$course,
+            course.quarter == input$quarter,
+            course.year >= input$year[1] &
+              course.year <= input$year[2]
+          ) %>%
+          select(course.year, First_Generation, course.grade) %>%
+          na.omit(data.years.names.substitute.subset3)
+        ggplot(
+          data.years.names.substitute.subset3,
+          aes(
+            x = as.factor(course.year),
+            y = course.grade,
+            fill = as.factor(First_Generation)
+          )
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
+                            name=NULL,
+                            labels = c(
+                              'Not First Generation Student',
+                              'First Generation Student'
+                            ))
       }
       
-      #Data disaggregated by students gender when no course quarter selected
+      # #COUGARS -- Data disaggregated by additional variable when no course quarter selected
+      # else if (input$minoritized_how == "Additional Variable") {
+      #   data.years.names.substitute.subset3 <-
+      #     data.years.names.substituteR %>%
+      #     filter(
+      #       course == input$course,
+      #       course.quarter == input$quarter,
+      #       course.year >= input$year[1] &
+      #         course.year <= input$year[2]
+      #     ) %>%
+      #     select(course.year, Additional_Var, course.grade) %>%
+      #     na.omit(data.years.names.substitute.subset3)
+      #   ggplot(
+      #     data.years.names.substitute.subset3,
+      #     aes(
+      #       x = as.factor(course.year),
+      #       y = course.grade,
+      #       fill = as.factor(Additional_Var)
+      #     )
+      #   ) + geom_violin(
+      #     draw_quantiles = c(0.25, 0.75),
+      #     position = position_dodge(0.5),
+      #     width =
+      #       0.2,
+      #     linetype = "dotted"
+      #   ) + geom_violin(
+      #     draw_quantiles = .5,
+      #     position = position_dodge(0.5),
+      #     width =
+      #       0.2,
+      #     alpha = 0
+      #   ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+      #     theme(plot.title = element_text(hjust = 0.5)) +
+      #     scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
+      #                       name=NULL,
+      #                       labels = c(
+      #                         'Group 1',
+      #                         'Group 2'
+      #                       ))
+      # }
+      
+      #Data not disaggregated when no course quarter selected
       else {
-        if (input$minoritized_how == "Binary Gender") {
-          data.years.names.substitute.subset2 <-
-            data.years.names.substituteR %>%
-            filter(
-              course == input$course,
-              course.quarter == input$quarter,
-              course.year >= input$year[1] &
-                course.year <= input$year[2]
-            ) %>%
-            select(course.year, Gender, course.grade) %>%
-            na.omit(data.years.names.substitute.subset2)
-          ggplot(
-            data.years.names.substitute.subset2,
-            aes(
-              x = as.factor(course.year),
-              y = course.grade,
-              fill = as.factor(Gender)
-            )
-          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                         0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
-                                                                                                                                                                                            labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
-            theme(plot.title = element_text(hjust = 0.5))
-        }
-        
-        #Data disaggregated by students first generation status when no course quarter selected
-        else {
-          if (input$minoritized_how == "First Generation Status") {
-            data.years.names.substitute.subset3 <-
-              data.years.names.substituteR %>%
-              filter(
-                course == input$course,
-                course.quarter == input$quarter,
-                course.year >= input$year[1] &
-                  course.year <= input$year[2]
-              ) %>%
-              select(course.year, First_Generation, course.grade) %>%
-              na.omit(data.years.names.substitute.subset3)
-            ggplot(
-              data.years.names.substitute.subset3,
-              aes(
-                x = as.factor(course.year),
-                y = course.grade,
-                fill = as.factor(First_Generation)
-              )
-            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                           0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
-                                                             "Not First Generation Student",
-                                                             "First Generation Student"
-                                                           )) + scale_fill_discrete(
-                                                             name = NULL,
-                                                             labels = c(
-                                                               'Not First Generation Student',
-                                                               'First Generation Student'
-                                                             )
-                                                           ) + ggtitle("Student academic performance") +
-              theme(plot.title = element_text(hjust = 0.5))
-          }
-          
-          
-          #Data not disaggregated when no course quarter selected
-          else {
-            data.years.names.substituteR %>%
-              filter(
-                course == input$course,
-                course.quarter == input$quarter,
-                course.year >= input$year[1] &
-                  course.year <= input$year[2]
-              ) %>%
-              ggplot(
-                aes(
-                  x = course.year,
-                  y = course.grade,
-                  #fill = course.year,
-                  group = course.year
-                )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
-              theme(plot.title = element_text(hjust = 0.5))
-            
-          }
-          
-          
-        }
+        data.years.names.substituteR %>%
+          filter(
+            course == input$course,
+            course.quarter == input$quarter,
+            course.year >= input$year[1] &
+              course.year <= input$year[2]
+          ) %>%
+          ggplot(aes(x = as.factor(course.year),
+                     y = course.grade,
+                     #fill = course.year,
+                     group = course.year)) + geom_violin(
+                       draw_quantiles = c(0.25, 0.75),
+                       position = position_dodge(0.5),
+                       width =
+                         0.2,
+                       linetype = "dotted"
+                     ) + geom_violin(
+                       draw_quantiles = .5,
+                       position = position_dodge(0.5),
+                       width =
+                         0.2,
+                       alpha = 0
+                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5))
         
       }
+      
     }
     else {
       #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
@@ -450,109 +557,177 @@ Here are some ways to incorporate high structure in your course: "
             y = course.grade,
             fill = as.factor(Racially_Minoritized)
           )
-        ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                       0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(
-                                                         labels = c(
-                                                           "Not Racially Minoritized",
-                                                           "Racially Minoritized",
-                                                           "Did not indicate"
-                                                         )
-                                                       ) + scale_fill_discrete(
-                                                         name = NULL,
-                                                         labels = c(
-                                                           'Not Racially Minoritized',
-                                                           'Racially Minoritized',
-                                                           'Did not indicate'
-                                                         )
-                                                       ) + ggtitle("Student academic performance") +
-          theme(plot.title = element_text(hjust = 0.5))
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA") + 
+          ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
+                            name=NULL,
+                            labels = c(
+                              'Not Racially Minoritized',
+                              'Racially Minoritized',
+                              'Did not indicate'
+                            ))
       }
       
+      #Data disaggregated by students gender when specific course quarter selected
+      else if (input$minoritized_how == "Binary Gender") {
+        data.years.names.substitute.subset5 <-
+          data.years.names.substituteR %>%
+          filter(course == input$course,
+                 course.year >= input$year[1] &
+                   course.year <= input$year[2]) %>%
+          select(course.year, Gender, course.grade) %>%
+          na.omit(data.years.names.substitute.subset5)
+        ggplot(
+          data.years.names.substitute.subset5,
+          aes(
+            x = as.factor(course.year),
+            y = course.grade,
+            fill = as.factor(Gender)
+          )
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5))+
+          scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
+                            name=NULL,
+                            labels = c(
+                              'Male',
+                              'Female',
+                              'Did not indicate'
+                            ))
+      }
+      
+      #Data disaggregated by students first generation status when specific course quarter selected
+      else if (input$minoritized_how == "First Generation Status") {
+        data.years.names.substitute.subset6 <-
+          data.years.names.substituteR %>%
+          filter(course == input$course,
+                 course.year >= input$year[1] &
+                   course.year <= input$year[2]) %>%
+          select(course.year, First_Generation, course.grade) %>%
+          na.omit(data.years.names.substitute.subset6)
+        ggplot(
+          data.years.names.substitute.subset6,
+          aes(
+            x = as.factor(course.year),
+            y = course.grade,
+            fill = as.factor(First_Generation)
+          )
+        ) + geom_violin(
+          draw_quantiles = c(0.25, 0.75),
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          linetype = "dotted"
+        ) + geom_violin(
+          draw_quantiles = .5,
+          position = position_dodge(0.5),
+          width =
+            0.2,
+          alpha = 0
+        ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5)) +
+          scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
+                            name=NULL,
+                            labels = c(
+                              'Not First Generation Student',
+                              'First Generation Student'
+                            ))
+      }
+      
+      # #COUGAR -- Data disaggregated by additional varaible when specific course quarter selected
+      # else if (input$minoritized_how == "Additional Variable") {
+      #   data.years.names.substitute.subset6 <-
+      #     data.years.names.substituteR %>%
+      #     filter(course == input$course,
+      #            course.year >= input$year[1] &
+      #              course.year <= input$year[2]) %>%
+      #     select(course.year, Additional_Var, course.grade) %>%
+      #     na.omit(data.years.names.substitute.subset6)
+      #   ggplot(
+      #     data.years.names.substitute.subset6,
+      #     aes(
+      #       x = as.factor(course.year),
+      #       y = course.grade,
+      #       fill = as.factor(Additional_Var)
+      #     )
+      #   ) + geom_violin(
+      #     draw_quantiles = c(0.25, 0.75),
+      #     position = position_dodge(0.5),
+      #     width =
+      #       0.2,
+      #     linetype = "dotted"
+      #   ) + geom_violin(
+      #     draw_quantiles = .5,
+      #     position = position_dodge(0.5),
+      #     width =
+      #       0.2,
+      #     alpha = 0
+      #   ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+      #     theme(plot.title = element_text(hjust = 0.5))+
+      #         scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
+      #                           name=NULL,
+      #                           labels = c(
+      #                             'Group 1',
+      #                             'Group 2'
+      #                           ))
+      # }
+      
+      #Data not disaggregated when specific course quarter selected
       else {
-        #Data disaggregated by students gender when specific course quarter selected
-        if (input$minoritized_how == "Binary Gender") {
-          data.years.names.substitute.subset5 <-
-            data.years.names.substituteR %>%
-            filter(
-              course == input$course,
-              course.year >= input$year[1] &
-                course.year <= input$year[2]
-            ) %>%
-            select(course.year, Gender, course.grade) %>%
-            na.omit(data.years.names.substitute.subset5)
-          ggplot(
-            data.years.names.substitute.subset5,
-            aes(
-              x = as.factor(course.year),
-              y = course.grade,
-              fill = as.factor(Gender)
-            )
-          ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                         0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c("Male", "Female", "Did not indicate")) + scale_fill_discrete(name = NULL,
-                                                                                                                                                                                            labels = c('Male', 'Female', 'Did not indicate')) + ggtitle("Student academic performance") +
-            theme(plot.title = element_text(hjust = 0.5))
-        }
-        else {
-          #Data disaggregated by students first generation status when specific course quarter selected
-          if (input$minoritized_how == "First Generation Status") {
-            data.years.names.substitute.subset6 <-
-              data.years.names.substituteR %>%
-              filter(
-                course == input$course,
-                course.year >= input$year[1] &
-                  course.year <= input$year[2]
-              ) %>%
-              select(course.year, First_Generation, course.grade) %>%
-              na.omit(data.years.names.substitute.subset6)
-            ggplot(
-              data.years.names.substitute.subset6,
-              aes(
-                x = as.factor(course.year),
-                y = course.grade,
-                fill = as.factor(First_Generation)
-              )
-            ) + labs(x = NULL, y = "GPA") + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), position = position_dodge(0.5), width =
-                                                           0.2) + labs(x = "Course Year", y = "GPA") + scale_fill_hue(labels = c(
-                                                             "Not First Generation Student",
-                                                             "First Generation Student"
-                                                           )) + scale_fill_discrete(
-                                                             name = NULL,
-                                                             labels = c(
-                                                               'Not First Generation Student',
-                                                               'First Generation Student'
-                                                             )
-                                                           ) + ggtitle("Student academic performance") +
-              theme(plot.title = element_text(hjust = 0.5))
-          }
-          
-          #Data not disaggregated when specific course quarter selected
-          else {
-            data.years.names.substituteR %>%
-              filter(
-                course == input$course,
-                course.year >= input$year[1] &
-                  course.year <= input$year[2]
-              ) %>%
-              ggplot(
-                aes(
-                  x = course.year,
-                  y = course.grade,
-                  #fill = course.year,
-                  group = course.year
-                )
-              ) + labs(x = NULL, y = "GPA") + geom_violin(fill="gray", draw_quantiles = c(0.25, 0.5, 0.75), width = 0.2) + ggtitle("Student academic performance") +
-              theme(plot.title = element_text(hjust = 0.5))
-            
-          }
-          
-        }
-        
-        
+        data.years.names.substituteR %>%
+          filter(course == input$course,
+                 course.year >= input$year[1] &
+                   course.year <= input$year[2]) %>%
+          ggplot(aes(x = as.factor(course.year),
+                     y = course.grade,
+                     #fill = course.year,
+                     group = course.year)) + geom_violin(
+                       draw_quantiles = c(0.25, 0.75),
+                       position = position_dodge(0.5),
+                       width =
+                         0.2,
+                       linetype = "dotted"
+                     ) + geom_violin(
+                       draw_quantiles = .5,
+                       position = position_dodge(0.5),
+                       width =
+                         0.2,
+                       alpha = 0
+                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme(plot.title = element_text(hjust = 0.5))
         
       }
       
     }
     
+    
+    
+    
   })
 }
+  
 shinyApp(ui = ui, server = server)
