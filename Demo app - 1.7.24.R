@@ -126,7 +126,6 @@ data_tab <- tabPanel(title = "Data",
                            #textOutput("minoritized_how_info4") #COUGAR
                          ),
                          
-                         # the following code creates the violin plot displayed in the data tab
                          mainPanel(
                            plotOutput("plot1"),
                            textOutput("intervention_info"),
@@ -157,6 +156,8 @@ ui <- navbarPage(title = "Visualizing inequities in student performance",
                  id = "tabs",
                  collapsible = TRUE,
                  login_tab)
+
+
 #FUNCTION code
 server <- function(input, output, session) {
   #logout button UI
@@ -169,7 +170,7 @@ server <- function(input, output, session) {
                  ))
   )
   
-  #Providing access to authenticated users to view app UI and data
+  ## Providing access to authenticated users to view app UI and data
   observeEvent(credentials()$user_auth, {
     if (credentials()$user_auth) {
       removeTab("tabs", "login")
@@ -203,7 +204,7 @@ server <- function(input, output, session) {
   })
 
   
-  #Resources and descriptions associated with graphs
+  ## Resources and descriptions associated with graphs
   url7 <-
     a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
   url8 <-
@@ -218,6 +219,8 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info2 <- renderText({
     reactive_function2()
+    # huskies, make sure the text below matches the definition of "racially minoritized"
+    # in your data
     paste(
       "Students who identify as Black, African-American, Latinx, Hawaiian/Pacific Islander and/or American Indian
 "
@@ -257,6 +260,7 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info3 <- renderText({
     reactive_function3()
+    # huskies, make sure the text below matches the definition of gender in your data
     paste(
       "Binary gender is the classification of gender into two distinct forms of masculine and feminine, whether by social system, cultural belief, or both simultaneously
 "
@@ -299,6 +303,7 @@ server <- function(input, output, session) {
   
   output$minoritized_how_info <- renderText({
     reactive_function()
+    # huskies, make sure the text below matches the definition of first generation used in your data
     paste("Students whose parents did not complete a 4-year college or university degree")
   })
   
@@ -366,6 +371,8 @@ Here are some ways to incorporate high structure in your course: "
 #     tagList(url9)
 # 
 #   })
+  
+## The following code creates the violin plot that is rendered above
   
   #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   output$plot1 <- renderPlot({
