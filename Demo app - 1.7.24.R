@@ -140,7 +140,8 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url3.2"),
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
-                           uiOutput("url3.3")#, #COUGAR (just the comma)
+                           uiOutput("url3.3"), #COUGAR (just the comma)
+                           uiOutput("url4.3")
                            #uiOutput("url1.4"), #COUGAR
                            #uiOutput("url2.4"), #COUGAR
                            #uiOutput("url3.4") #COUGAR
@@ -205,12 +206,22 @@ server <- function(input, output, session) {
 
   
   ## Resources and descriptions associated with graphs
-  url7 <-
-    a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
-  url8 <-
-    a("Sample materials from a high-structure class", href = "https://www.lifescied.org/doi/10.1187/cbe.14-03-0050")
-  url9 <-
-    a("Resources from UW Teach", href = "https://teaching.washington.edu/inclusive-teaching/supporting-specific-student-groups/first-generation-students/")
+  
+  #URM Resources
+  url1 <- a("Re-Envisioning the Culture of Undergraduate Biology Education to Foster Black Student Success", href = "https://www.lifescied.org/doi/full/10.1187/cbe.22-09-0175")
+  url2 <- a("Teaching About Racial Equity in Introductory Physics Courses", href = "https://pubs.aip.org/aapt/pte/article-abstract/55/6/328/782527/Teaching-About-Racial-Equity-in-Introductory?redirectedFrom=fulltext")
+  url3 <- a("Student-Authored Scientist Spotlights", href = "https://www.lifescied.org/doi/full/10.1187/cbe.21-03-0060")
+
+  #Binary Gender Resources
+  url4 <- a("Gender Gaps in Achievement and Participation in Intro Biology", href = "https://www.google.com/url?q=https://www.lifescied.org/doi/full/10.1187/cbe.13-10-0204&sa=D&source=docs&ust=1706046973389795&usg=AOvVaw0bli17OADKj5hdiAx5p6wt")
+  url5 <- a("Transgender, Nonbinary, Gender Nonconforming, and Questioning Students in Biology", href = "https://www.lifescied.org/doi/full/10.1187/cbe.21-12-0343")
+  url6 <- a("Reducing the gender gap in the physics classroom", href = "https://pubs.aip.org/aapt/ajp/article-abstract/74/2/118/1039347/Reducing-the-gender-gap-in-the-physics-classroom?redirectedFrom=fulltext")
+  url7 <- a("Values Affirmation to Reduce Gender Acheivement Gap in Science", href = "https://www.science.org/doi/10.1126/science.1195996")
+  
+  #First Gen Resources
+  url8 <-a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
+  url9 <- a("Sample materials from a high-structure class", href = "https://www.lifescied.org/doi/10.1187/cbe.14-03-0050")
+  url10 <-a("Resources from UW Teach", href = "https://teaching.washington.edu/inclusive-teaching/supporting-specific-student-groups/first-generation-students/")
   
   ##RACIALLY MINORITIZED
   reactive_function2 <- eventReactive(input$minoritized_how, {
@@ -230,26 +241,26 @@ server <- function(input, output, session) {
   output$intervention_info2 <- renderText({
     reactive_function2()
     paste(
-      "[Insert minoritized race stuff here (and replace the links)]: "
+      "Studies multiple strategies for creating a more equitable classroom environment, including acknowledging racial equity topics in the classroom, intentionally providing equitable access to resources, and instructors self reflecting and coming up with action plans to address biases."
     )
   })
   
-  #NOTE -- link to something other than urls 7,8,9... create new urls relevant to race
+
   output$url1.2 <- renderUI({
     reactive_function2()
-    tagList(url7)
+    tagList(url1)
     
   })
   
   output$url2.2 <- renderUI({
     reactive_function2()
-    tagList(url8)
+    tagList(url2)
     
   })
   
   output$url3.2 <- renderUI({
     reactive_function2()
-    tagList(url9)
+    tagList(url3)
     
   })
   
@@ -270,27 +281,34 @@ server <- function(input, output, session) {
   output$intervention_info3 <- renderText({
     reactive_function3()
     paste(
-      "[Insert binary gender stuff here (and replace the links)]: "
+      "Many studies reflect on how to reduce gender gaps by encorporating active learning and changing grading stuctures. However, it is also important to acknowledge the erasure of nonbinary and transgender invidividuals in the majority of gender based education studies."
     )
   })
-  #NOTE -- link to something other than urls 7,8,9... create new urls relevant to binary gender
+  
   output$url1.3 <- renderUI({
     reactive_function3()
-    tagList(url7)
+    tagList(url4)
     
   })
   
   output$url2.3 <- renderUI({
     reactive_function3()
-    tagList(url8)
+    tagList(url5)
     
   })
   
   output$url3.3 <- renderUI({
     reactive_function3()
-    tagList(url9)
+    tagList(url6)
     
   })
+  
+  output$url4.3 <- renderUI({
+    reactive_function3()
+    tagList(url7)
+    
+  })
+  
   
   
   ## FIRST GEN STATUS
@@ -317,19 +335,19 @@ Here are some ways to incorporate high structure in your course: "
   })
   output$url1 <- renderUI({
     reactive_function()
-    tagList(url7)
+    tagList(url8)
     
   })
   
   output$url2 <- renderUI({
     reactive_function()
-    tagList(url8)
+    tagList(url9)
     
   })
   
   output$url3 <- renderUI({
     reactive_function()
-    tagList(url9)
+    tagList(url10)
     
   })
   
