@@ -1,28 +1,39 @@
-#load necessary packages
+###### Instructions for modification - see supplemental for details ######
+# There are two ways to interact with this code
+# places where you need to make changes in order to run the app with your own 
+# data are tagged with the word "huskies"
+# places where you can make changes to add features to the app are tagged 
+# with the word "cougars"
+# use command f and search for either "huskies" or "cougars"
+# to find all the places you need to change
+
+
+# load necessary packages
 library(shiny)
 library(dplyr)
 library(tidyverse)
 
-#load your data file
-data.years.names.substituteR <-
-  read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv")
+## load your data file
+data.years.names.substituteR <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
+ 
 
 # ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
 # data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
 
-#Define authentication credentials
+## Define authentication credentials
 user_base <- tibble::tibble(
-  user = c("user1", "user2"),
-  password = c("pass1", "pass2"),
-  permissions = c("standard", "standard"),
-  name = c("User One", "User Two")
+  user = c("user1", "user2"), #creates a list of authorized user names
+  password = c("pass1", "pass2"), #creates a list of authorized passwords
+  permissions = c("standard", "standard"), #sets permissions for each user
+  name = c("User One", "User Two")# sets display name for each user
 )
 
-#Design all tabs present in UI
-login_tab <- tabPanel(title = icon("lock"),
+## Design all tabs present in UI
+login_tab <- tabPanel(title = icon("lock"), 
                       value = "login",
                       shinyauthr::loginUI("login"))
 #UI code
+# creates the home page
 home_tab <-
   tabPanel(
     
