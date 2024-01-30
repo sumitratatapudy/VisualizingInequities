@@ -14,24 +14,86 @@ library(dplyr)
 library(tidyverse)
 
 ## load your data file
-data.years.names.substituteR <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
- 
+class.data <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
 
-# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
-# data.years.names.substituteR$Additional_Var = rbinom(length(data.years.names.substituteR$course.grade), 1, 0.5)
 
-## Define authentication credentials
-user_base <- tibble::tibble(
-  user = c("user1", "user2"), #creates a list of authorized user names
-  password = c("pass1", "pass2"), #creates a list of authorized passwords
-  permissions = c("standard", "standard"), #sets permissions for each user
-  name = c("User One", "User Two")# sets display name for each user
+#user database
+users <- data.frame(
+  username = c("admin", "instructor 1"),
+  password = c("adminpass", "pass1"),
+  stringsAsFactors = FALSE
 )
 
+
+
+# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
+# class.data$Additional_Var = rbinom(length(class.data$course.grade), 1, 0.5)
+
+
+
 ## Design all tabs present in UI
-login_tab <- tabPanel(title = icon("lock"), 
-                      value = "login",
-                      shinyauthr::loginUI("login"))
+ login_tab <-  tabPanel(
+   "Login",
+   fluidPage(
+     sidebarLayout(
+       sidebarPanel(
+         textInput("username", "Username:"),
+         passwordInput("password", "Password:"),
+         actionButton("login", "Login")
+       ),
+       mainPanel(
+         plotOutput("data_plot")
+       )
+     )
+   )
+ )
+
+ 
+ #Define how UI will be displayed on app
+ ui <- navbarPage(title = "Visualizing inequities in student performance",
+                  id = "tabs",
+                  collapsible = TRUE,
+                  login_tab)
+ 
+ 
+ #FUNCTION code
+ server <- function(input, output, session) { 
+   class.data1 <- subset(class.data, (instructors == users$username)) #filter data to match intstructor 
+   # Reactive values to store logged-in user's data
+   user_data <- reactiveVal(NULL)
+ 
+   observeEvent(input$login, {
+     username <- input$username
+     password <- input$password
+     
+     # Check if credentials match
+     user <- users[users$username == username & users$password == password, ]
+     
+     if (nrow(user) == 1) {
+       showModal(modalDialog(
+         title = "Login Successful",
+         "Welcome to the app!"
+         
+       ))
+       
+       # Filter data based on logged-in user
+       
+       
+       appendTab("tabs", home_tab, select = TRUE)
+       appendTab("tabs", data_tab, select = FALSE)
+     
+     } else {
+       showModal(modalDialog(
+         title = "Login Failed",
+         "Invalid username or password. Please try again."
+       ))
+     }
+     
+     
+     
+   })
+   
+
 #UI code
 # creates the home page
 home_tab <-
@@ -66,14 +128,16 @@ data_tab <- tabPanel(title = "Data",
                            # cougars, the following codes creates a slider to select what years you want 
                            # to display in the visual. You can use this code as a template to create a 
                            # similar slider with other variables of interest
-                           sliderInput( 
+                           sliderInput( #"integer slider",
                              "year",
                              "Choose year",
-                             min = 2001, #huskies, update this with the minimum year from your data
-                             max = 2016, #huskies, update this with the maximum year from your data
-                             value = c(2010, 2014), #huskies, sets the initial date range to be displayed
+                             min = min(class.data$course.year), #huskies, update this with the minimum year from your data
+                             max = max(class.data$course.year), #huskies, update this with the maximum year from your data
+                             value = c(min(class.data$course.year), max(class.data$course.year)), #huskies, sets the initial date range to be displayed
                              #make sure the years in the line above are found in your data
-                             sep = ""
+                             sep = "",
+                             #step = 1,
+                             #round = 0
                            ), 
                            
                            # cougars, the following code creates a drop-down to select which course
@@ -81,8 +145,8 @@ data_tab <- tabPanel(title = "Data",
                            selectInput(
                              "course",
                              "Choose course",
-                             choices = c(unique(data.years.names.substituteR$course)),
-                             selected = "Course10C" #huskies, sets the initial course to be displayed
+                             choices = c(unique(class.data1$course))
+                             #selected = "Course10C" #huskies, sets the initial course to be displayed
                              #change the course name in quotations to a course name found in your data
                            ),
                            
@@ -152,57 +216,40 @@ data_tab <- tabPanel(title = "Data",
                      ))
 
 
-#Define how UI will be displayed on app
-ui <- navbarPage(title = "Visualizing inequities in student performance",
-                 id = "tabs",
-                 collapsible = TRUE,
-                 login_tab)
 
-
-#FUNCTION code
-server <- function(input, output, session) {
-  #logout button UI
-  insertUI(
-    selector = ".navbar .container-fluid .navbar-collapse",
-    ui = tags$ul(class = "nav navbar-nav navbar-right",
-                 tags$li(
-                   div(style = "padding: 10px; padding-top: 8px; padding-bottom: 0;",
-                       shinyauthr::logoutUI("logout"))
-                 ))
-  )
+#   #logout button UI
+  # insertUI(
+  #   selector = ".navbar .container-fluid .navbar-collapse",
+  #   ui = tags$ul(class = "nav navbar-nav navbar-right",
+  #                tags$li(
+  #                  div(style = "padding: 10px; padding-top: 8px; padding-bottom: 0;",
+  #                      shinyauthr::logoutUI("logout"))
+  #                ))
+  # )
   
-  ## Providing access to authenticated users to view app UI and data
-  observeEvent(credentials()$user_auth, {
-    if (credentials()$user_auth) {
-      removeTab("tabs", "login")
-      
-      appendTab("tabs", home_tab, select = TRUE)
-      
-      output$user_data <-
-        renderPrint({
-          dplyr::glimpse(credentials()$info)
-        })
-      
-      appendTab("tabs", data_tab)
-      
-    }
-  })
+  # ## Providing access to authenticated users to view app UI and data
+  # observeEvent(credentials()$user_auth, {
+  #   if (credentials()$user_auth) {
+  #     removeTab("tabs", "login")
+  #     
+  #     appendTab("tabs", home_tab, select = TRUE)
+  #     
+  #     output$user_data <-
+  #       renderPrint({
+  #         dplyr::glimpse(credentials()$info)
+  #       })
+  #     
+  #     appendTab("tabs", data_tab)
+  #     
+  #   }
+  # })
   
-  #login and logout functions
-  credentials <- shinyauthr::loginServer(
-    id = "login",
-    data = user_base,
-    user_col = "user",
-    pwd_col = "password",
-    reload_on_logout = TRUE,
-    log_out = reactive(logout_init())
-  )
-  
-  logout_init <- shinyauthr::logoutServer(id = "logout",
-                                          active = reactive(credentials()$user_auth))
-  observeEvent(input$logout, {
-    shinyjs::alert("Thank you!")
-  })
+ 
+  # logout_init <- shinyauthr::logoutServer(id = "logout",
+  #                                         active = reactive(credentials()$user_auth))
+  # observeEvent(input$logout, {
+  #   shinyjs::alert("Thank you!")
+  # })
 
   
   ## Resources and descriptions associated with graphs
@@ -393,13 +440,15 @@ Here are some ways to incorporate high structure in your course: "
 ## The following code creates the violin plot that is rendered above
   
   #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
+  
+  #class.data <- subset(class.data, (instructors == "instructor 1"))
   output$plot1 <- renderPlot({
-    req(credentials()$user_auth)
     if (input$quarter != "None selected") {
       if (input$minoritized_how == "Racially Minoritized") {
         data.years.names.substitute.subset <-
-          data.years.names.substituteR %>%
+          class.data %>%
           filter(
+            #instructors == input$instructors
             course == input$course,
             course.quarter == input$quarter,
             course.year >= input$year[1] &
@@ -440,7 +489,7 @@ Here are some ways to incorporate high structure in your course: "
       #Data disaggregated by students gender when no course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
         data.years.names.substitute.subset2 <-
-          data.years.names.substituteR %>%
+          class.data1 %>%
           filter(
             course == input$course,
             course.quarter == input$quarter,
@@ -481,7 +530,7 @@ Here are some ways to incorporate high structure in your course: "
       #Data disaggregated by students first generation status when no course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
         data.years.names.substitute.subset3 <-
-          data.years.names.substituteR %>%
+          class.data1 %>%
           filter(
             course == input$course,
             course.quarter == input$quarter,
@@ -494,7 +543,7 @@ Here are some ways to incorporate high structure in your course: "
           data.years.names.substitute.subset3,
           aes(
             x = as.factor(course.year),
-            y = course.grade,
+            y = as.factor(course.grade),
             fill = as.factor(First_Generation)
           )
         ) + geom_violin(
@@ -522,7 +571,7 @@ Here are some ways to incorporate high structure in your course: "
       # #COUGARS -- Data disaggregated by additional variable when no course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
       #   data.years.names.substitute.subset3 <-
-      #     data.years.names.substituteR %>%
+      #     class.data %>%
       #     filter(
       #       course == input$course,
       #       course.quarter == input$quarter,
@@ -562,7 +611,7 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data not disaggregated when no course quarter selected
       else {
-        data.years.names.substituteR %>%
+        class.data1 %>%
           filter(
             course == input$course,
             course.quarter == input$quarter,
@@ -594,7 +643,7 @@ Here are some ways to incorporate high structure in your course: "
       #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
       if (input$minoritized_how == "Racially Minoritized") {
         data.years.names.substitute.subset4 <-
-          data.years.names.substituteR %>%
+          class.data1 %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
@@ -634,7 +683,7 @@ Here are some ways to incorporate high structure in your course: "
       #Data disaggregated by students gender when specific course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
         data.years.names.substitute.subset5 <-
-          data.years.names.substituteR %>%
+          class.data1 %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
@@ -673,7 +722,7 @@ Here are some ways to incorporate high structure in your course: "
       #Data disaggregated by students first generation status when specific course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
         data.years.names.substitute.subset6 <-
-          data.years.names.substituteR %>%
+          class.data1 %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
@@ -711,7 +760,7 @@ Here are some ways to incorporate high structure in your course: "
       # #COUGAR -- Data disaggregated by additional varaible when specific course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
       #   data.years.names.substitute.subset6 <-
-      #     data.years.names.substituteR %>%
+      #     class.data %>%
       #     filter(course == input$course,
       #            course.year >= input$year[1] &
       #              course.year <= input$year[2]) %>%
@@ -748,7 +797,7 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data not disaggregated when specific course quarter selected
       else {
-        data.years.names.substituteR %>%
+        class.data1 %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
@@ -781,3 +830,5 @@ Here are some ways to incorporate high structure in your course: "
 }
   
 shinyApp(ui = ui, server = server)
+
+
