@@ -228,7 +228,7 @@ server <- function(input, output, session) {
          width = 600, height = 400)
   }, deleteFile = FALSE)
   
-  #class.data1 <- subset(class.data, (instructors == users$username)) #filter data to match intstructor 
+  #class.data <- subset(class.data, (instructors == users$username)) #filter data to match intstructor 
   # Reactive values to store logged-in user's data
   #user_data <- reactiveVal(NULL)
   
@@ -512,6 +512,20 @@ Here are some ways to incorporate high structure in your course: "
           ) %>%
           select(course.year, Racially_Minoritized, course.grade) %>%
           na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "Racially_Minoritized" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, Racially_Minoritized) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, Racially_Minoritized)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
           data.years.names.substitute.subset,
           aes(
@@ -523,28 +537,30 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + 
           ggtitle("Student academic performance") +
+          theme_bw() +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
-                              'Racially Majoritized',
+                              'Not Racially Minoritized',
                               'Racially Minoritized',
                               'Did not indicate'
-                            ))
+                            )) 
       }
       #Data disaggregated by students gender when no course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
-        data.years.names.substitute.subset2 <-
+        data.years.names.substitute.subset <-
           class.data %>%
           filter(
             course == input$course,
@@ -553,9 +569,23 @@ Here are some ways to incorporate high structure in your course: "
               course.year <= input$year[2]
           ) %>%
           select(course.year, Gender, course.grade) %>%
-          na.omit(data.years.names.substitute.subset2)
+          na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "Gender" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, Gender) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, Gender)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
-          data.years.names.substitute.subset2,
+          data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
             y = course.grade,
@@ -565,15 +595,17 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme_bw() +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
                             name=NULL,
@@ -581,11 +613,11 @@ Here are some ways to incorporate high structure in your course: "
                               'Male',
                               'Female',
                               'Did not indicate'
-                            ))
+                            )) 
       }
       #Data disaggregated by students first generation status when no course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
-        data.years.names.substitute.subset3 <-
+        data.years.names.substitute.subset <-
           class.data %>%
           filter(
             course == input$course,
@@ -594,9 +626,23 @@ Here are some ways to incorporate high structure in your course: "
               course.year <= input$year[2]
           ) %>%
           select(course.year, First_Generation, course.grade) %>%
-          na.omit(data.years.names.substitute.subset3)
+          na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "First_Generation" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, First_Generation) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, First_Generation)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
-          data.years.names.substitute.subset3,
+          data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
             y = as.factor(course.grade),
@@ -606,27 +652,29 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme_bw()+
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
-                              'Continuing Generation Student',
+                              'Not First Generation Student',
                               'First Generation Student'
                             ))
       }
       
       # #COUGARS -- Data disaggregated by additional variable when no course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
-      #   data.years.names.substitute.subset3 <-
+      #   data.years.names.substitute.subset <-
       #     class.data %>%
       #     filter(
       #       course == input$course,
@@ -635,9 +683,23 @@ Here are some ways to incorporate high structure in your course: "
       #         course.year <= input$year[2]
       #     ) %>%
       #     select(course.year, Additional_Var, course.grade) %>%
-      #     na.omit(data.years.names.substitute.subset3)
+      #     na.omit(data.years.names.substitute.subset)
+      #   
+      #   #find which combinations of "Additional_Var" and course.year have n>=10
+      #   count_n <- data.years.names.substitute.subset %>% 
+      #     group_by(course.year, Additional_Var) %>% summarize(enough=n()>=10)
+      #   #isolate the combinations with high enough n to keep
+      #   high_n_combos <- count_n %>% 
+      #     filter(enough) %>% select(-enough)
+      #   #the number of combinations omitted due to small sample size
+      #   num_omissions <- sum(!count_n$enough)
+      #   #filter to remove data points of combinations with n>=10
+      #   data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+      #     filter(interaction(data.frame(course.year, Additional_Var)) %in% 
+      #              interaction(high_n_combos))
+      #   
       #   ggplot(
-      #     data.years.names.substitute.subset3,
+      #     data.years.names.substitute.subset,
       #     aes(
       #       x = as.factor(course.year),
       #       y = course.grade,
@@ -647,15 +709,17 @@ Here are some ways to incorporate high structure in your course: "
       #     draw_quantiles = c(0.25, 0.75),
       #     position = position_dodge(0.5),
       #     width =
-      #       0.2,
-      #     linetype = "dotted"
+      #       0.4,
+      #     linewidth=.3
       #   ) + geom_violin(
       #     draw_quantiles = .5,
       #     position = position_dodge(0.5),
       #     width =
-      #       0.2,
+      #       0.4,
+      #     linewidth=.75
       #     alpha = 0
       #   ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+      #     theme_bw() +
       #     theme(plot.title = element_text(hjust = 0.5)) +
       #     scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
       #                       name=NULL,
@@ -667,29 +731,44 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data not disaggregated when no course quarter selected
       else {
-        class.data %>%
+        data.years.names.substitute.subset <- class.data %>%
           filter(
             course == input$course,
             course.quarter == input$quarter,
             course.year >= input$year[1] &
               course.year <= input$year[2]
-          ) %>%
-          ggplot(aes(x = as.factor(course.year),
-                     y = course.grade,
-                     #fill = course.year,
-                     group = course.year)) + geom_violin(
-                       draw_quantiles = c(0.25, 0.75),
-                       position = position_dodge(0.5),
-                       width =
-                         0.2,
-                       linetype = "dotted"
-                     ) + geom_violin(
-                       draw_quantiles = .5,
-                       position = position_dodge(0.5),
-                       width =
-                         0.2,
-                       alpha = 0
-                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          )
+        
+        #find which course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year)) %in% 
+                   interaction(high_n_combos))
+        
+        ggplot(data.years.names.substitute.subset, aes(x = as.factor(course.year),
+                                                       y = course.grade,
+                                                       #fill = course.year,
+                                                       group = course.year)) + geom_violin(
+                                                         draw_quantiles = c(0.25, 0.75),
+                                                         position = position_dodge(0.5),
+                                                         width =
+                                                           0.4,
+                                                         linewidth=.3
+                                                       ) + geom_violin(
+                                                         draw_quantiles = .5,
+                                                         position = position_dodge(0.5),
+                                                         width =
+                                                           0.4,
+                                                         linewidth=.75,
+                                                         alpha = 0
+                                                       ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") + theme_bw() +
           theme(plot.title = element_text(hjust = 0.5))
         
       }
@@ -698,15 +777,29 @@ Here are some ways to incorporate high structure in your course: "
     else {
       #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
       if (input$minoritized_how == "Racially Minoritized") {
-        data.years.names.substitute.subset4 <-
+        data.years.names.substitute.subset <-
           class.data %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
           select(course.year, Racially_Minoritized, course.grade) %>%
-          na.omit(data.years.names.substitute.subset4)
+          na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "Racially_Minoritized" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, Racially_Minoritized) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, Racially_Minoritized)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
-          data.years.names.substitute.subset4,
+          data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
             y = course.grade,
@@ -716,21 +809,23 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + 
           ggtitle("Student academic performance") +
+          theme_bw() +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
-                              'Racially Majoritized',
+                              'Not Racially Minoritized',
                               'Racially Minoritized',
                               'Did not indicate'
                             ))
@@ -738,15 +833,29 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data disaggregated by students gender when specific course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
-        data.years.names.substitute.subset5 <-
+        data.years.names.substitute.subset <-
           class.data %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
           select(course.year, Gender, course.grade) %>%
-          na.omit(data.years.names.substitute.subset5)
+          na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "Gender" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, Gender) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, Gender)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
-          data.years.names.substitute.subset5,
+          data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
             y = course.grade,
@@ -756,15 +865,17 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+          theme_bw() + 
           theme(plot.title = element_text(hjust = 0.5))+
           scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
                             name=NULL,
@@ -777,15 +888,29 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data disaggregated by students first generation status when specific course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
-        data.years.names.substitute.subset6 <-
+        data.years.names.substitute.subset <-
           class.data %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
                    course.year <= input$year[2]) %>%
           select(course.year, First_Generation, course.grade) %>%
-          na.omit(data.years.names.substitute.subset6)
+          na.omit(data.years.names.substitute.subset)
+        
+        #find which combinations of "First_Generation" and course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year, First_Generation) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year, First_Generation)) %in% 
+                   interaction(high_n_combos))
+        
         ggplot(
-          data.years.names.substitute.subset6,
+          data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
             y = course.grade,
@@ -795,35 +920,51 @@ Here are some ways to incorporate high structure in your course: "
           draw_quantiles = c(0.25, 0.75),
           position = position_dodge(0.5),
           width =
-            0.2,
-          linetype = "dotted"
+            0.4,
+          linewidth=.3
         ) + geom_violin(
           draw_quantiles = .5,
           position = position_dodge(0.5),
           width =
-            0.2,
+            0.4,
+          linewidth=.75,
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+          theme_bw() +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
-                              'Continuing Generation Student',
+                              'Not First Generation Student',
                               'First Generation Student'
                             ))
       }
       
       # #COUGAR -- Data disaggregated by additional varaible when specific course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
-      #   data.years.names.substitute.subset6 <-
+      #   data.years.names.substitute.subset <-
       #     class.data %>%
       #     filter(course == input$course,
       #            course.year >= input$year[1] &
       #              course.year <= input$year[2]) %>%
       #     select(course.year, Additional_Var, course.grade) %>%
-      #     na.omit(data.years.names.substitute.subset6)
+      #     na.omit(data.years.names.substitute.subset)
+      #   
+      #   #find which combinations of "Additional_Var" and course.year have n>=10
+      #   count_n <- data.years.names.substitute.subset %>% 
+      #     group_by(course.year, Additional_Var) %>% summarize(enough=n()>=10)
+      #   #isolate the combinations with high enough n to keep
+      #   high_n_combos <- count_n %>% 
+      #     filter(enough) %>% select(-enough)
+      #   #the number of combinations omitted due to small sample size
+      #   num_omissions <- sum(!count_n$enough)
+      #   #filter to remove data points of combinations with n>=10
+      #   data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+      #     filter(interaction(data.frame(course.year, Additional_Var)) %in% 
+      #              interaction(high_n_combos))
+      #   
       #   ggplot(
-      #     data.years.names.substitute.subset6,
+      #     data.years.names.substitute.subset,
       #     aes(
       #       x = as.factor(course.year),
       #       y = course.grade,
@@ -833,15 +974,17 @@ Here are some ways to incorporate high structure in your course: "
       #     draw_quantiles = c(0.25, 0.75),
       #     position = position_dodge(0.5),
       #     width =
-      #       0.2,
-      #     linetype = "dotted"
+      #       0.4,
+      #     linewidth=.3
       #   ) + geom_violin(
       #     draw_quantiles = .5,
       #     position = position_dodge(0.5),
       #     width =
-      #       0.2,
+      #       0.4,
+      #     linewidth=.75
       #     alpha = 0
       #   ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
+      #     theme_bw() +
       #     theme(plot.title = element_text(hjust = 0.5))+
       #         scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
       #                           name=NULL,
@@ -853,26 +996,41 @@ Here are some ways to incorporate high structure in your course: "
       
       #Data not disaggregated when specific course quarter selected
       else {
-        class.data %>%
+        data.years.names.substitute.subset <- class.data %>%
           filter(course == input$course,
                  course.year >= input$year[1] &
-                   course.year <= input$year[2]) %>%
-          ggplot(aes(x = as.factor(course.year),
-                     y = course.grade,
-                     #fill = course.year,
-                     group = course.year)) + geom_violin(
-                       draw_quantiles = c(0.25, 0.75),
-                       position = position_dodge(0.5),
-                       width =
-                         0.2,
-                       linetype = "dotted"
-                     ) + geom_violin(
-                       draw_quantiles = .5,
-                       position = position_dodge(0.5),
-                       width =
-                         0.2,
-                       alpha = 0
-                     ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
+                   course.year <= input$year[2])
+        
+        #find which course.year have n>=10
+        count_n <- data.years.names.substitute.subset %>% 
+          group_by(course.year) %>% summarize(enough=n()>=10)
+        #isolate the combinations with high enough n to keep
+        high_n_combos <- count_n %>% 
+          filter(enough) %>% select(-enough)
+        #the number of combinations omitted due to small sample size
+        num_omissions <- sum(!count_n$enough)
+        #filter to remove data points of combinations with n>=10
+        data.years.names.substitute.subset <- data.years.names.substitute.subset %>% 
+          filter(interaction(data.frame(course.year)) %in% 
+                   interaction(high_n_combos))
+        
+        ggplot(data.years.names.substitute.subset, aes(x = as.factor(course.year),
+                                                       y = course.grade,
+                                                       #fill = course.year,
+                                                       group = course.year)) + geom_violin(
+                                                         draw_quantiles = c(0.25, 0.75),
+                                                         position = position_dodge(0.5),
+                                                         width =
+                                                           0.4,
+                                                         linewidth=.3
+                                                       ) + geom_violin(
+                                                         draw_quantiles = .5,
+                                                         position = position_dodge(0.5),
+                                                         width =
+                                                           0.4,
+                                                         linewidth=.75,
+                                                         alpha = 0
+                                                       ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") + theme_bw() +
           theme(plot.title = element_text(hjust = 0.5))
         
       }
@@ -883,6 +1041,7 @@ Here are some ways to incorporate high structure in your course: "
     
     
   })
+  
 }
 
 shinyApp(ui = ui, server = server)
