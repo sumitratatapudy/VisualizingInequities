@@ -197,8 +197,8 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url3.2"),
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
-                           uiOutput("url3.3"), #COUGAR (just the comma)
-                           uiOutput("url4.3")
+                           uiOutput("url3.3"), 
+                           uiOutput("url4.3")#, #COUGAR (just the comma)
                            #uiOutput("url1.4"), #COUGAR
                            #uiOutput("url2.4"), #COUGAR
                            #uiOutput("url3.4") #COUGAR
