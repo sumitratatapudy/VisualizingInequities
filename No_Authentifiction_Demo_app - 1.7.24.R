@@ -14,7 +14,7 @@ library(dplyr)
 library(tidyverse)
 
 ## load your data file
-class.data <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
+class.data <- read.csv("Data_Cleaning/Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
 
 
 #user database
@@ -47,30 +47,67 @@ class.data <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") 
 #     )
 #   )
 # )
-home_tab <-
-  tabPanel(
-    title = "Background",
-    h4("Educational inequities remain one of the most persistent, intractable, and most crucial problems in our society. Interrogating the manifestation of these inequities in higher education classes is essential and urgent. 
-You are taking the first step."),
-    strong("What this app is:"),
-    br(),
-    tags$ul(
-      tags$li("This app is intended as a tool for self-reflection: instructors know their class environment best but interrogating the manifestation of educational inequities is not always simple."), 
-      tags$li("This tool aims to address this shortcoming. With the intentional selection of years, terms, and courses, instructors can disaggregate their data by several student identities. Because without disaggregating data, we are only measuring the majority. "), 
-      tags$li("With intentional, guided self-reflection, and carefully curated resources, instructors can practice equity-minded reflection practices and develop strategies that disrupt inequities in their classrooms.")), 
-    strong("Broader context:"),
-    tags$ul(
-      tags$li("Differences between student groups are due to systemic barriers, not due to inherent differences in abilities. Said another way, we need to fix our institutions, not our students."), 
-      tags$li("While a single instructor does not always have control over larger systemic issues, the classroom is one place where they do have control."),
-      tags$li("It can be intimidating to start. And once you do, please don’t stop.")),
-    strong("Data presented and intention"),
-    tags$ul(
-      tags$li("The data shown here come from a freely available dataset of student outcomes. The data originally came from institutional data and have been further anonymized to obscure courses, instructors, terms, and years. The students and the patterns in student outcomes are real."), 
-      tags$li("The intention is that instructors or administrators will download and edit the code to develop a data processing application to explore their own data. We use these data here for illustrative purposes only to demonstrate the power and potential of such a tool."), 
-      tags$li("One can read more about the application here: [link to publication coming soon]")), 
-    strong("Key to Reading Kernel (Violin) Plots:"),
-      imageOutput("myImage")
-       )  
+
+
+library(shiny)
+
+home_tab <- tabPanel(
+  title = "Background",
+  tags$style(HTML("
+    .custom-text { color: black; line-height: 1.5; }
+    .custom-bg-1 { background-color: #fad1d2; padding: 20px; border-radius: 10px; margin-bottom: 10px; }
+    .custom-bg-2 { background-color: #fbb2b3; padding: 20px; border-radius: 10px; margin-bottom: 10px; }
+    .custom-bg-3 { background-color: #f8999d; padding: 20px; border-radius: 10px; margin-bottom: 10px; } /* Color between #fbb2b3 and #ed5e61 */
+    .custom-no-bg { margin-bottom: 10px; }
+    .flex-container { display: flex; }
+    .left-boxes { flex: 1; }
+    .right-image { flex: 1; padding-left: 20px; }
+    .half-width-image { max-width: 50%; }
+  ")),
+  
+  h4(class = "custom-text", "Educational inequities remain one of the most persistent, intractable, and most crucial problems in our society. Interrogating the manifestation of these inequities in higher education classes is essential and urgent. You are taking the first step."),
+  
+  div(class = "flex-container",
+      div(class = "left-boxes",
+          div(
+            class = "custom-bg-1",
+            strong("What this app is:"),
+            br(),
+            tags$ul(
+              tags$li("This app is intended as a tool for self-reflection: instructors know their class environment best but interrogating the manifestation of educational inequities is not always simple."), 
+              tags$li("This tool aims to address this shortcoming. With the intentional selection of years, terms, and courses, instructors can disaggregate their data by several student identities. Because without disaggregating data, we are only measuring the majority."), 
+              tags$li("With intentional, guided self-reflection, and carefully curated resources, instructors can practice equity-minded reflection practices and develop strategies that disrupt inequities in their classrooms.")
+            )
+          ),
+          
+          div(
+            class = "custom-bg-2",
+            strong("Broader context:"),
+            tags$ul(
+              tags$li("Differences between student groups are due to systemic barriers, not due to inherent differences in abilities. Said another way, we need to fix our institutions, not our students."), 
+              tags$li("While a single instructor does not always have control over larger systemic issues, the classroom is one place where they do have control."),
+              tags$li("It can be intimidating to start. And once you do, please don’t stop.")
+            )
+          ),
+          
+          div(
+            class = "custom-bg-3",
+            strong("Data presented and intention"),
+            tags$ul(
+              tags$li("The data shown here come from a freely available dataset of student outcomes. The data originally came from institutional data and have been further anonymized to obscure courses, instructors, terms, and years. The students and the patterns in student outcomes are real."), 
+              tags$li("The intention is that instructors or administrators will download and edit the code to develop a data processing application to explore their own data. We use these data here for illustrative purposes only to demonstrate the power and potential of such a tool."), 
+              tags$li("One can read more about the application here: [link to publication coming soon]")
+            )
+          )
+      ),
+      
+      div(class = "right-image half-width-image", 
+            strong("Key to Reading Kernel (Violin) Plots:"),
+          imageOutput("myImage")
+      )
+  )
+)
+
   
 
 data_tab <- tabPanel(title = "Data",
