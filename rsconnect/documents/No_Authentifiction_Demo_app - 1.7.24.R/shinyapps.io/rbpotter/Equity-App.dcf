@@ -5,7 +5,7 @@ account: rbpotter
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11079568
-bundleId: 8205769
+bundleId: 8209195
 url: https://rbpotter.shinyapps.io/Equity-App/
 version: 1
 asMultiple: FALSE

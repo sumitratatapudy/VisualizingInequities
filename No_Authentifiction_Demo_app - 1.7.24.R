@@ -75,7 +75,7 @@ home_tab <- tabPanel(
             br(),
             tags$ul(
               tags$li("This app is intended as a tool for self-reflection: instructors know their class environment best but interrogating the manifestation of educational inequities is not always simple."), 
-              tags$li("This tool aims to address this shortcoming. With the intentional selection of years, terms, and courses, instructors can disaggregate their data by several student identities. Because without disaggregating data, we are only measuring the majority."), 
+              tags$li("This tool aims to address this shortcoming. By selecting years, terms, and courses, instructors can disaggregate their data by several student identities. Because without disaggregating data, we are only measuring the majority. "), 
               tags$li("With intentional, guided self-reflection, and carefully curated resources, instructors can practice equity-minded reflection practices and develop strategies that disrupt inequities in their classrooms.")
             )
           ),
@@ -225,7 +225,7 @@ server <- function(input, output, session) {
   output$myImage <- renderImage({
     list(src = "images/app_image.png",
          alt = "Your Image Alt Text",
-         width = 600, height = 400)
+         width = 500, height = 400)
   }, deleteFile = FALSE)
   
   #class.data <- subset(class.data, (instructors == users$username)) #filter data to match intstructor 
