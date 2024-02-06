@@ -65,7 +65,7 @@ home_tab <- tabPanel(
     .half-width-image { max-width: 50%; }
   ")),
   
-  h4(class = "custom-text", "Educational inequities remain one of the most persistent, intractable, and most crucial problems in our society. Interrogating the manifestation of these inequities in higher education classes is essential and urgent. You are taking the first step."),
+ h4(class = "custom-text", "Educational inequities remain one of the most persistent, intractable, and most crucial problems in our society. Interrogating the manifestation of these inequities in higher education classes is essential and urgent. You are taking the first step."),
   
   div(class = "flex-container",
       div(class = "left-boxes",
@@ -129,7 +129,7 @@ data_tab <- tabPanel(title = "Data",
                              value = c(2002,2003), #huskies, sets the initial date range to be displayed
                              #make sure the years in the line above are found in your data
                              sep = "",
-                             #step = 1,
+                             step = 1
                              #round = 0
                            ), 
                            
@@ -185,8 +185,11 @@ data_tab <- tabPanel(title = "Data",
                          
                          mainPanel(
                            plotOutput("plot1"),
-                           textOutput("intervention_info"),
-                           textOutput("intervention_info2"),
+                           uiOutput("reflection_questions"),
+                           uiOutput("reflection_questions1"),
+                           uiOutput("reflection_questions2"),
+                           uiOutput("intervention_info"),
+                           uiOutput("intervention_info2"),
                            textOutput("intervention_info3"),
                            #textOutput("intervention_info4"), #COUGAR
                            uiOutput("url1"),
@@ -342,13 +345,19 @@ server <- function(input, output, session) {
     )
   })
   
-  output$intervention_info2 <- renderText({
-    reactive_function2()
-    paste(
-      "Studies multiple strategies for creating a more equitable classroom environment, including acknowledging racial equity topics in the classroom, intentionally providing equitable access to resources, and instructors self reflecting and coming up with action plans to address biases."
-    )
-  })
   
+  output$reflection_questions <- renderUI({
+    reactive_function2()
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
+  })
+
+  output$intervention_info2 <- renderUI({
+    reactive_function2()
+    HTML("<p>Studies suggest multiple strategies for creating a more equitable classroom environment, including acknowledging racial equity topics in the classroom, intentionally providing equitable access to resources, and instructors self reflecting and coming up with action plans to address biases.</p>")
+  })
   
   output$url1.2 <- renderUI({
     reactive_function2()
@@ -379,6 +388,14 @@ server <- function(input, output, session) {
     paste(
       "Binary classification of gender is outdated, but institutional data lag behind."
     )
+  })
+  
+  output$reflection_questions1 <- renderUI({
+    reactive_function3()
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
   })
   
   output$intervention_info3 <- renderText({
@@ -426,6 +443,14 @@ server <- function(input, output, session) {
     reactive_function()
     # huskies, make sure the text below matches the definition of first generation used in your data
     paste("Students whose parents did not complete a 4-year college or university degree")
+  })
+  
+  output$reflection_questions2 <- renderUI({
+    reactive_function()
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
   })
   
   output$intervention_info <- renderText({
@@ -553,7 +578,7 @@ Here are some ways to incorporate high structure in your course: "
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
-                              'Not Racially Minoritized',
+                              'Racially Majoritized',
                               'Racially Minoritized',
                               'Did not indicate'
                             )) 
@@ -667,7 +692,7 @@ Here are some ways to incorporate high structure in your course: "
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
-                              'Not First Generation Student',
+                              'Continuing Generation Student',
                               'First Generation Student'
                             ))
       }
@@ -825,7 +850,7 @@ Here are some ways to incorporate high structure in your course: "
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
-                              'Not Racially Minoritized',
+                              'Racially Majoritized',
                               'Racially Minoritized',
                               'Did not indicate'
                             ))
@@ -935,7 +960,7 @@ Here are some ways to incorporate high structure in your course: "
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
-                              'Not First Generation Student',
+                              'Continuing Generation Student',
                               'First Generation Student'
                             ))
       }
