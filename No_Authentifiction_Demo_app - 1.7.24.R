@@ -574,7 +574,7 @@ Here are some ways to incorporate high structure in your course: "
         ) + labs(x = "Course Year", y = "GPA") + 
           ggtitle("Student academic performance") +
           theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
@@ -631,7 +631,7 @@ Here are some ways to incorporate high structure in your course: "
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
           theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
           scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
                             name=NULL,
                             labels = c(
@@ -670,7 +670,7 @@ Here are some ways to incorporate high structure in your course: "
           data.years.names.substitute.subset,
           aes(
             x = as.factor(course.year),
-            y = as.factor(course.grade),
+            y = course.grade,
             fill = as.factor(First_Generation)
           )
         ) + geom_violin(
@@ -688,7 +688,7 @@ Here are some ways to incorporate high structure in your course: "
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
           theme_bw()+
-          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
@@ -745,7 +745,7 @@ Here are some ways to incorporate high structure in your course: "
       #     alpha = 0
       #   ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
       #     theme_bw() +
-      #     theme(plot.title = element_text(hjust = 0.5)) +
+      #     theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
       #     scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
       #                       name=NULL,
       #                       labels = c(
@@ -794,7 +794,7 @@ Here are some ways to incorporate high structure in your course: "
                                                          linewidth=.75,
                                                          alpha = 0
                                                        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") + theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5))
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top")
         
       }
       
@@ -846,7 +846,7 @@ Here are some ways to incorporate high structure in your course: "
         ) + labs(x = "Course Year", y = "GPA") + 
           ggtitle("Student academic performance") +
           theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
           scale_fill_manual(values = c("#d5edf6", "#55b9dd"), 
                             name=NULL,
                             labels = c(
@@ -901,7 +901,7 @@ Here are some ways to incorporate high structure in your course: "
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") +
           theme_bw() + 
-          theme(plot.title = element_text(hjust = 0.5))+
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top")+
           scale_fill_manual(values = c("#d9f4d7", "#67d35f"), 
                             name=NULL,
                             labels = c(
@@ -956,7 +956,7 @@ Here are some ways to incorporate high structure in your course: "
           alpha = 0
         ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
           theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top") +
           scale_fill_manual(values = c("#fad1d2", "#ed5e61"), 
                             name=NULL,
                             labels = c(
@@ -1010,7 +1010,7 @@ Here are some ways to incorporate high structure in your course: "
       #     alpha = 0
       #   ) + labs(x = "Course Year", y = "GPA")  + ggtitle("Student academic performance") +
       #     theme_bw() +
-      #     theme(plot.title = element_text(hjust = 0.5))+
+      #     theme(plot.title = element_text(hjust = 0.5), legend.position = "top")+
       #         scale_fill_manual(values = c("#ffe6cc", "#ff901a"),
       #                           name=NULL,
       #                           labels = c(
@@ -1056,7 +1056,7 @@ Here are some ways to incorporate high structure in your course: "
                                                          linewidth=.75,
                                                          alpha = 0
                                                        ) + labs(x = "Course Year", y = "GPA") + ggtitle("Student academic performance") + theme_bw() +
-          theme(plot.title = element_text(hjust = 0.5))
+          theme(plot.title = element_text(hjust = 0.5), legend.position = "top")
         
       }
       
