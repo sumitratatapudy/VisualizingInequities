@@ -7,8 +7,9 @@
 # use command f and search for either "huskies" or "cougars"
 # to find all the places you need to change
 
+######### SET UP YOUR ENVIRONMENT #########
 
-# load necessary packages
+## load necessary packages
 library(shiny)
 library(dplyr)
 library(tidyverse)
@@ -17,21 +18,24 @@ library(tidyverse)
 class.data <- read.csv("Data_Cleaning/Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
 
 
-#user database
+######### AUTHENTICATION #########
+
+## user database
+# define authorized user names and passwords
+# cougars, define or read in a dataframe of user names and passwords for your organization 
 users <- data.frame(
   username = c("admin", "instructor 1"),
   password = c("adminpass", "pass1"),
   stringsAsFactors = FALSE
 )
 
+# filter data to match instructor
+class.data1 <- subset(class.data, (instructors == users$username)) 
 
-
-# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
-# class.data$Additional_Var = rbinom(length(class.data$course.grade), 1, 0.5)
-
-
-
+######### CREATE USER INTERFACE (UI) #########
 ## Design all tabs present in UI
+
+##### Define login tab #####
  login_tab <-  tabPanel(
    "Login",
    fluidPage(
@@ -48,54 +52,8 @@ users <- data.frame(
    )
  )
 
- 
- #Define how UI will be displayed on app
- ui <- navbarPage(title = "Visualizing inequities in student performance",
-                  id = "tabs",
-                  collapsible = TRUE,
-                  login_tab)
- 
- 
- #FUNCTION code
- server <- function(input, output, session) { 
-   class.data1 <- class.data #AN EASY WAY TO SEE ALL COURSES WHILE ADMIN ISNT WORKING (but remove later)
-#   class.data1 <- subset(class.data, (instructors == users$username)) #filter data to match instructor 
-   # Reactive values to store logged-in user's data
-   user_data <- reactiveVal(NULL)
 
-   observeEvent(input$login, {
-     username <- input$username
-     password <- input$password
-     
-     # Check if credentials match
-     user <- users[users$username == username & users$password == password, ]
-     
-     if (nrow(user) == 1) {
-       showModal(modalDialog(
-         title = "Login Successful",
-         "Welcome to the app!"
-         
-       ))
-       
-       # Filter data based on logged-in user
-       
-       
-       appendTab("tabs", home_tab, select = TRUE)
-       appendTab("tabs", data_tab, select = FALSE)
-     
-     } else {
-       showModal(modalDialog(
-         title = "Login Failed",
-         "Invalid username or password. Please try again."
-       ))
-     }
-     
-     
-     
-   })
-
-#UI code
-# creates the home page
+##### Define home tab #####
 home_tab <-
   tabPanel(
     
@@ -113,10 +71,10 @@ home_tab <-
       tags$li("While you may not have control over the larger systemic issues, your classroom is a space where you could have control to mitigate these differences with thoughtful/reflective pedagogy."),
       tags$li("It can be intimidating to start. The results from this app can be a way to identify where to focus those efforts. You know your class best, and then you can customize your interventions. ")
     )  
-    )
-  
+  )
 
-# creates the data tab
+
+##### Define data tab #####
 data_tab <- tabPanel(title = "Data",
                      fluidPage(
                        titlePanel("Student grade distributions"),
@@ -216,61 +174,77 @@ data_tab <- tabPanel(title = "Data",
                      ))
 
 
-
-#   #logout button UI
-  # insertUI(
-  #   selector = ".navbar .container-fluid .navbar-collapse",
-  #   ui = tags$ul(class = "nav navbar-nav navbar-right",
-  #                tags$li(
-  #                  div(style = "padding: 10px; padding-top: 8px; padding-bottom: 0;",
-  #                      shinyauthr::logoutUI("logout"))
-  #                ))
-  # )
-  
-  # ## Providing access to authenticated users to view app UI and data
-  # observeEvent(credentials()$user_auth, {
-  #   if (credentials()$user_auth) {
-  #     removeTab("tabs", "login")
-  #     
-  #     appendTab("tabs", home_tab, select = TRUE)
-  #     
-  #     output$user_data <-
-  #       renderPrint({
-  #         dplyr::glimpse(credentials()$info)
-  #       })
-  #     
-  #     appendTab("tabs", data_tab)
-  #     
-  #   }
-  # })
-  
  
-  # logout_init <- shinyauthr::logoutServer(id = "logout",
-  #                                         active = reactive(credentials()$user_auth))
-  # observeEvent(input$logout, {
-  #   shinyjs::alert("Thank you!")
-  # })
+##### Define how tabs will be displayed on app #####
+# navbar enables a navigation bar with different tabs
+ui <- navbarPage(title = "Visualizing inequities in student performance",
+                 id = "tabs",
+                 collapsible = TRUE,
+                 login_tab)
+ 
+ 
+######### SERVER FUNCTION (INSTRUCTIONS FOR BUILDING APP) #########
 
-  
-  ## Resources and descriptions associated with graphs
-  
-  #URM Resources
+server <- function(input, output, session) { 
+   # Reactive values to store logged-in user's data
+   user_data <- reactiveVal(NULL)
+
+   ## login 
+   # query user for credentials
+   observeEvent(input$login, {
+     username <- input$username
+     password <- input$password
+     
+     # Check if credentials match
+     user <- users[users$username == username & users$password == password, ]
+     
+     # login successful
+     if (nrow(user) == 1) {
+       showModal(modalDialog(
+         title = "Login Successful",
+         "Welcome to the app!"
+         
+       ))
+       
+       # sets up tabs for user
+       appendTab("tabs", home_tab, select = TRUE)
+       appendTab("tabs", data_tab, select = FALSE)
+     
+    # login failed
+     } else {
+       showModal(modalDialog(
+         title = "Login Failed",
+         "Invalid username or password. Please try again."
+       ))
+     }
+     
+     
+     
+   })
+
+
+##### Define resources and reflection questions #####
+   
+## URM Resources
   url1 <- a("Re-Envisioning the Culture of Undergraduate Biology Education to Foster Black Student Success", href = "https://www.lifescied.org/doi/full/10.1187/cbe.22-09-0175")
   url2 <- a("Teaching About Racial Equity in Introductory Physics Courses", href = "https://pubs.aip.org/aapt/pte/article-abstract/55/6/328/782527/Teaching-About-Racial-Equity-in-Introductory?redirectedFrom=fulltext")
   url3 <- a("Student-Authored Scientist Spotlights", href = "https://www.lifescied.org/doi/full/10.1187/cbe.21-03-0060")
 
-  #Binary Gender Resources
+## Binary Gender Resources
   url4 <- a("Gender Gaps in Achievement and Participation in Intro Biology", href = "https://www.google.com/url?q=https://www.lifescied.org/doi/full/10.1187/cbe.13-10-0204&sa=D&source=docs&ust=1706046973389795&usg=AOvVaw0bli17OADKj5hdiAx5p6wt")
   url5 <- a("Transgender, Nonbinary, Gender Nonconforming, and Questioning Students in Biology", href = "https://www.lifescied.org/doi/full/10.1187/cbe.21-12-0343")
   url6 <- a("Reducing the gender gap in the physics classroom", href = "https://pubs.aip.org/aapt/ajp/article-abstract/74/2/118/1039347/Reducing-the-gender-gap-in-the-physics-classroom?redirectedFrom=fulltext")
   url7 <- a("Values Affirmation to Reduce Gender Acheivement Gap in Science", href = "https://www.science.org/doi/10.1126/science.1195996")
   
-  #First Gen Resources
+## First Gen Resources
   url8 <-a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
   url9 <- a("Sample materials from a high-structure class", href = "https://www.lifescied.org/doi/10.1187/cbe.14-03-0050")
   url10 <-a("Resources from UW Teach", href = "https://teaching.washington.edu/inclusive-teaching/supporting-specific-student-groups/first-generation-students/")
   
-  ##RACIALLY MINORITIZED
+
+##### Query user for student group, define, and display relevant resources #####
+  
+## Racially Minoritized 
   reactive_function2 <- eventReactive(input$minoritized_how, {
     req(input$minoritized_how == "Racially Minoritized")
   })
@@ -311,7 +285,7 @@ data_tab <- tabPanel(title = "Data",
     
   })
   
-  ##BINARY GENDER
+## Binary Gender
   reactive_function3 <- eventReactive(input$minoritized_how, {
     req(input$minoritized_how == "Binary Gender")
   })
@@ -358,7 +332,7 @@ data_tab <- tabPanel(title = "Data",
   
   
   
-  ## FIRST GEN STATUS
+## First Gen Status
   reactive_function <- eventReactive(input$minoritized_how, {
     req(input$minoritized_how == "First Generation Status")
   })
@@ -440,11 +414,10 @@ Here are some ways to incorporate high structure in your course: "
   
 
     
-## The following code creates the violin plot that is rendered above
+##### Disaggregate data and display violin plot #####
   
-  #Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
+#Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   
-  #class.data <- subset(class.data, (instructors == "instructor 1"))
   output$plot1 <- renderPlot({
     if (input$quarter != "None selected") {
       if (input$minoritized_how == "Racially Minoritized") {
@@ -990,6 +963,8 @@ Here are some ways to incorporate high structure in your course: "
   })
 
 }
+
+######### RUN THE APP #########
   
 shinyApp(ui = ui, server = server)
 
