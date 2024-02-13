@@ -54,27 +54,65 @@ class.data1 <- subset(class.data, (instructors == users$username))
 
 
 ##### Define home tab #####
-home_tab <-
-  tabPanel(
-    
-    title = "Approach towards visualizing inequities",
-    h4("Systemic inequities are often invisible and challenging to identify. You are taking a crucial step in working towards mitigating inequities in your classroom just by being here. 
-      Welcome!"),
-    strong("What this app is:"),
-    br(),
-    tags$ul(
-      tags$li("This app is intended as a tool for self-reflection: Instructors know their class environment best; this tool aids identification of equitable outcomes persist and provides an opportunity to make changes."), 
-      tags$li("Comparing performance before/after intervention in class by examining outcomes over time/terms.")), 
-    strong("Larger context:"),
-    tags$ul(
-      tags$li("Differences between student groups are due to systemic barriers that present opportunity gaps, not due to inherent differences in abilities."), 
-      tags$li("While you may not have control over the larger systemic issues, your classroom is a space where you could have control to mitigate these differences with thoughtful/reflective pedagogy."),
-      tags$li("It can be intimidating to start. The results from this app can be a way to identify where to focus those efforts. You know your class best, and then you can customize your interventions. ")
-    )  
+home_tab <- tabPanel(
+  title = "Background",
+  tags$style(HTML("
+    .custom-text { color: black; line-height: 1.5; }
+    .custom-bg-1 { background-color: #fad1d2; padding: 20px; border-radius: 10px; margin-bottom: 10px; }
+    .custom-bg-2 { background-color: #fbb2b3; padding: 20px; border-radius: 10px; margin-bottom: 10px; }
+    .custom-bg-3 { background-color: #f8999d; padding: 20px; border-radius: 10px; margin-bottom: 10px; } /* Color between #fbb2b3 and #ed5e61 */
+    .custom-no-bg { margin-bottom: 10px; }
+    .flex-container { display: flex; }
+    .left-boxes { flex: 1; }
+    .right-image { flex: 1; padding-left: 20px; }
+    .half-width-image { max-width: 50%; }
+  ")),
+  
+  h4(class = "custom-text", "Educational inequities remain one of the most persistent, intractable, and most crucial problems in our society. Interrogating the manifestation of these inequities in higher education classes is essential and urgent. You are taking the first step."),
+  
+  div(class = "flex-container",
+      div(class = "left-boxes",
+          div(
+            class = "custom-bg-1",
+            strong("What this app is:"),
+            br(),
+            tags$ul(
+              tags$li("This app is intended as a tool for self-reflection: instructors know their class environment best but interrogating the manifestation of educational inequities is not always simple."), 
+              tags$li("This tool aims to address this shortcoming. By selecting years, terms, and courses, instructors can disaggregate their data by several student identities. Because without disaggregating data, we are only measuring the majority. "), 
+              tags$li("With intentional, guided self-reflection, and carefully curated resources, instructors can practice equity-minded reflection practices and develop strategies that disrupt inequities in their classrooms.")
+            )
+          ),
+          
+          div(
+            class = "custom-bg-2",
+            strong("Broader context:"),
+            tags$ul(
+              tags$li("Differences between student groups are due to systemic barriers, not due to inherent differences in abilities. Said another way, we need to fix our institutions, not our students."), 
+              tags$li("While a single instructor does not always have control over larger systemic issues, the classroom is one place where they do have control."),
+              tags$li("It can be intimidating to start. And once you do, please don’t stop.")
+            )
+          ),
+          
+          div(
+            class = "custom-bg-3",
+            strong("Data presented and intention"),
+            tags$ul(
+              tags$li("The data shown here come from a freely available dataset of student outcomes. The data originally came from institutional data and have been further anonymized to obscure courses, instructors, terms, and years. The students and the patterns in student outcomes are real."), 
+              tags$li("The intention is that instructors or administrators will download and edit the code to develop a data processing application to explore their own data. We use these data here for illustrative purposes only to demonstrate the power and potential of such a tool."), 
+              tags$li("One can read more about the application here: [link to publication coming soon]")
+            )
+          )
+      ),
+      
+      div(class = "right-image half-width-image", 
+          strong("Key to Reading Kernel (Violin) Plots:"),
+          imageOutput("myImage")
+      )
   )
+)
 
 
-##### Define data tab #####
+
 data_tab <- tabPanel(title = "Data",
                      fluidPage(
                        titlePanel("Student grade distributions"),
@@ -91,10 +129,10 @@ data_tab <- tabPanel(title = "Data",
                              "Choose year",
                              min = min(class.data$course.year), #huskies, update this with the minimum year from your data
                              max = max(class.data$course.year), #huskies, update this with the maximum year from your data
-                             value = c(min(class.data$course.year), max(class.data$course.year)), #huskies, sets the initial date range to be displayed
+                             value = c(2002,2003), #huskies, sets the initial date range to be displayed
                              #make sure the years in the line above are found in your data
                              sep = "",
-                             #step = 1,
+                             step = 1
                              #round = 0
                            ), 
                            
@@ -150,8 +188,11 @@ data_tab <- tabPanel(title = "Data",
                          
                          mainPanel(
                            plotOutput("plot1"),
-                           textOutput("intervention_info"),
-                           textOutput("intervention_info2"),
+                           uiOutput("reflection_questions"),
+                           uiOutput("reflection_questions1"),
+                           uiOutput("reflection_questions2"),
+                           uiOutput("intervention_info"),
+                           uiOutput("intervention_info2"),
                            textOutput("intervention_info3"),
                            #textOutput("intervention_info4"), #COUGAR
                            uiOutput("url1"),
@@ -163,7 +204,7 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
                            uiOutput("url3.3"), 
-                           uiOutput("url4.3")#, #COUGAR (comma only)
+                           uiOutput("url4.3")#, #COUGAR (just the comma)
                            #uiOutput("url1.4"), #COUGAR
                            #uiOutput("url2.4"), #COUGAR
                            #uiOutput("url3.4") #COUGAR
@@ -172,8 +213,6 @@ data_tab <- tabPanel(title = "Data",
                          
                        )
                      ))
-
-
  
 ##### Define how tabs will be displayed on app #####
 # navbar enables a navigation bar with different tabs
@@ -186,6 +225,14 @@ ui <- navbarPage(title = "Visualizing inequities in student performance",
 ######### SERVER FUNCTION (INSTRUCTIONS FOR BUILDING APP) #########
 
 server <- function(input, output, session) { 
+  
+  # Render the image
+  output$myImage <- renderImage({
+    list(src = "images/app_image.png",
+         alt = "Your Image Alt Text",
+         width = 500, height = 400)
+  }, deleteFile = FALSE)
+  
    # Reactive values to store logged-in user's data
    user_data <- reactiveVal(NULL)
 
@@ -259,14 +306,20 @@ server <- function(input, output, session) {
     )
   })
   
-  output$intervention_info2 <- renderText({
+  
+  output$reflection_questions <- renderUI({
     reactive_function2()
-    paste(
-      "Studies multiple strategies for creating a more equitable classroom environment, including acknowledging racial equity topics in the classroom, intentionally providing equitable access to resources, and instructors self reflecting and coming up with action plans to address biases."
-    )
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
   })
   
-
+  output$intervention_info2 <- renderUI({
+    reactive_function2()
+    HTML("<p>Studies suggest multiple strategies for creating a more equitable classroom environment, including acknowledging racial equity topics in the classroom, intentionally providing equitable access to resources, and instructors self reflecting and coming up with action plans to address biases.</p>")
+  })
+  
   output$url1.2 <- renderUI({
     reactive_function2()
     tagList(url1)
@@ -285,7 +338,7 @@ server <- function(input, output, session) {
     
   })
   
-## Binary Gender
+  ##BINARY GENDER
   reactive_function3 <- eventReactive(input$minoritized_how, {
     req(input$minoritized_how == "Binary Gender")
   })
@@ -294,9 +347,16 @@ server <- function(input, output, session) {
     reactive_function3()
     # huskies, make sure the text below matches the definition of gender in your data
     paste(
-      "Binary gender is the classification of gender into two distinct forms of masculine and feminine, whether by social system, cultural belief, or both simultaneously
-"
+      "Binary classification of gender is outdated, but institutional data lag behind."
     )
+  })
+  
+  output$reflection_questions1 <- renderUI({
+    reactive_function3()
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
   })
   
   output$intervention_info3 <- renderText({
@@ -332,7 +392,7 @@ server <- function(input, output, session) {
   
   
   
-## First Gen Status
+  ## FIRST GEN STATUS
   reactive_function <- eventReactive(input$minoritized_how, {
     req(input$minoritized_how == "First Generation Status")
   })
@@ -344,6 +404,14 @@ server <- function(input, output, session) {
     reactive_function()
     # huskies, make sure the text below matches the definition of first generation used in your data
     paste("Students whose parents did not complete a 4-year college or university degree")
+  })
+  
+  output$reflection_questions2 <- renderUI({
+    reactive_function()
+    HTML("<p><u><strong>Questions for reflection:</u></p>
+       <p><strong>1) Are there in equities?</strong><br>
+       <strong>2) What might be contributing to inequities in the context of this class?</strong><br>
+       <strong>3) With whom can you reflect on these data?</strong></p>")
   })
   
   output$intervention_info <- renderText({
@@ -373,45 +441,43 @@ Here are some ways to incorporate high structure in your course: "
   })
   
   
-  
-#   ## COUGARS -- ADDITIONAL VARIABLE
-#   reactive_function4 <- eventReactive(input$minoritized_how, {
-#     req(input$minoritized_how == "Additional Variable")
-#   })
-# 
-#   output$minoritized_how_info4 <- renderText({
-#     reactive_function4()
-#     paste(
-#       "[Give a definition of your variable here]
-# "
-#     )
-#   })
-# 
-#   output$intervention_info4 <- renderText({
-#     reactive_function4()
-#     paste(
-#       "[Insert a summary of suggestions/interventions and some links below]: "
-#     )
-#   })
-#   #NOTE -- link to something other than urls 7,8,9... create new urls relevant to your additional variable
-#   output$url1.4 <- renderUI({
-#     reactive_function4()
-#     tagList(url7)
-# 
-#   })
-# 
-#   output$url2.4 <- renderUI({
-#     reactive_function4()
-#     tagList(url8)
-# 
-#   })
-# 
-#   output$url3.4 <- renderUI({
-#     reactive_function4()
-#     tagList(url9)
-# 
-#   })
-  
+  #   ## COUGARS -- ADDITIONAL VARIABLE
+  #   reactive_function4 <- eventReactive(input$minoritized_how, {
+  #     req(input$minoritized_how == "Additional Variable")
+  #   })
+  # 
+  #   output$minoritized_how_info4 <- renderText({
+  #     reactive_function4()
+  #     paste(
+  #       "[Give a definition of your variable here]
+  # "
+  #     )
+  #   })
+  # 
+  #   output$intervention_info4 <- renderText({
+  #     reactive_function4()
+  #     paste(
+  #       "[Insert a summary of suggestions/interventions and some links below]: "
+  #     )
+  #   })
+  #   #NOTE -- link to something other than urls 7,8,9... create new urls relevant to your additional variable
+  #   output$url1.4 <- renderUI({
+  #     reactive_function4()
+  #     tagList(url7)
+  # 
+  #   })
+  # 
+  #   output$url2.4 <- renderUI({
+  #     reactive_function4()
+  #     tagList(url8)
+  # 
+  #   })
+  # 
+  #   output$url3.4 <- renderUI({
+  #     reactive_function4()
+  #     tagList(url9)
+  # 
+  #   })
 
     
 ##### Disaggregate data and display violin plot #####

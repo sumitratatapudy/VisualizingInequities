@@ -17,38 +17,6 @@ library(tidyverse)
 class.data <- read.csv("Data_Cleaning/Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
 
 
-#user database
-# users <- data.frame(
-#   username = c("admin", "instructor 1"),
-#   password = c("adminpass", "pass1"),
-#   stringsAsFactors = FALSE
-# )
-
-
-
-# ##just for development WILL REMOVE LATER!: COUGARS add additional variable (values randomly generated)
-# class.data$Additional_Var = rbinom(length(class.data$course.grade), 1, 0.5)
-
-
-
-## Design all tabs present in UI
-# login_tab <-  tabPanel(
-#   "Login",
-#   fluidPage(
-#     sidebarLayout(
-#       sidebarPanel(
-#         textInput("username", "Username:"),
-#         passwordInput("password", "Password:"),
-#         actionButton("login", "Login")
-#       ),
-#       mainPanel(
-#         plotOutput("data_plot")
-#       )
-#     )
-#   )
-# )
-
-
 library(shiny)
 
 home_tab <- tabPanel(
@@ -265,51 +233,6 @@ server <- function(input, output, session) {
   #   
   # })
   
-  
-  #UI code
-  # creates the home page
-  
-  # appendTab("tabs", home_tab, select = TRUE)
-  # appendTab("tabs", data_tab, select = FALSE)
-
-  
-  # creates the data tab
-  
-  
-  
-  #   #logout button UI
-  # insertUI(
-  #   selector = ".navbar .container-fluid .navbar-collapse",
-  #   ui = tags$ul(class = "nav navbar-nav navbar-right",
-  #                tags$li(
-  #                  div(style = "padding: 10px; padding-top: 8px; padding-bottom: 0;",
-  #                      shinyauthr::logoutUI("logout"))
-  #                ))
-  # )
-  
-  # ## Providing access to authenticated users to view app UI and data
-  # observeEvent(credentials()$user_auth, {
-  #   if (credentials()$user_auth) {
-  #     removeTab("tabs", "login")
-  #     
-  #     appendTab("tabs", home_tab, select = TRUE)
-  #     
-  #     output$user_data <-
-  #       renderPrint({
-  #         dplyr::glimpse(credentials()$info)
-  #       })
-  #     
-  #     appendTab("tabs", data_tab)
-  #     
-  #   }
-  # })
-  
-  
-  # logout_init <- shinyauthr::logoutServer(id = "logout",
-  #                                         active = reactive(credentials()$user_auth))
-  # observeEvent(input$logout, {
-  #   shinyjs::alert("Thank you!")
-  # })
   
   
   ## Resources and descriptions associated with graphs
