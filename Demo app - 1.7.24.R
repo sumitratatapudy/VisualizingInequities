@@ -24,7 +24,7 @@ class.data <- read.csv("Data_Cleaning/Template_Inequities_In_Course_Performance_
 # define authorized user names and passwords
 # cougars, define or read in a dataframe of user names and passwords for your organization 
 users <- data.frame(
-  username = c("admin", "instructor 1"),
+  username = c("admin", "instructor1"),
   password = c("adminpass", "pass1"),
   stringsAsFactors = FALSE
 )
