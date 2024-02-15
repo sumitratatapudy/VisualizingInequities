@@ -239,7 +239,7 @@ server <- function(input, output, session) {
   
   #URM Resources
   url1 <- a("Re-Envisioning the Culture of Undergraduate Biology Education to Foster Black Student Success", href = "https://www.lifescied.org/doi/full/10.1187/cbe.22-09-0175")
-  url2 <- a("Teaching About Racial Equity in Introductory Physics Courses", href = "https://pubs.aip.org/aapt/pte/article-abstract/55/6/328/782527/Teaching-About-Racial-Equity-in-Introductory?redirectedFrom=fulltext")
+  url2 <- a("UW Teach Inclusive Teaching", href = "https://teaching.washington.edu/inclusive-teaching/")
   url3 <- a("Student-Authored Scientist Spotlights", href = "https://www.lifescied.org/doi/full/10.1187/cbe.21-03-0060")
   
   #Binary Gender Resources
@@ -251,7 +251,7 @@ server <- function(input, output, session) {
   #First Gen Resources
   url8 <-a("How to design a high-structure class", href = "https://files.eric.ed.gov/fulltext/EJ1268125.pdf")
   url9 <- a("Sample materials from a high-structure class", href = "https://www.lifescied.org/doi/10.1187/cbe.14-03-0050")
-  url10 <-a("Resources from UW Teach", href = "https://teaching.washington.edu/inclusive-teaching/supporting-specific-student-groups/first-generation-students/")
+  url10 <-a("First generation resources from UW Teach", href = "https://teaching.washington.edu/inclusive-teaching/supporting-specific-student-groups/first-generation-students/")
   
   ##RACIALLY MINORITIZED
   reactive_function2 <- eventReactive(input$minoritized_how, {
