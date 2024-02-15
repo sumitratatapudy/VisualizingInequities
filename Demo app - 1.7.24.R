@@ -15,7 +15,7 @@ library(dplyr)
 library(tidyverse)
 
 ## load your data file
-class.data <- read.csv("Data_Cleaning/Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
+class.data <- read.csv("Template_Inequities_In_Course_Performance_Cleaned.csv") #huskies: make sure the text in quotations exactly matches your csv file name
 
 
 ######### AUTHENTICATION #########
