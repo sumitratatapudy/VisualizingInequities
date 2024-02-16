@@ -175,15 +175,15 @@ data_tab <- tabPanel(title = "Data",
                                "None selected",
                                "Racially Minoritized",
                                "Binary Gender",
-                               "First Generation Status"#, #COUGARS (comma only)
-                               #"Additional Variable" #COUGARS
+                               "First Generation Status"#, #cougars (comma only)
+                               #"Additional Variable" #cougars
                              ),
                              selected = "None selected"
                            ),
                            textOutput("minoritized_how_info"),
                            textOutput("minoritized_how_info2"),
-                           textOutput("minoritized_how_info3")#, #COUGAR (comma only)
-                           #textOutput("minoritized_how_info4") #COUGAR
+                           textOutput("minoritized_how_info3")#, #cougars (comma only)
+                           #textOutput("minoritized_how_info4") #cougars
                          ),
                          
                          mainPanel(
@@ -194,7 +194,7 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("intervention_info"),
                            uiOutput("intervention_info2"),
                            textOutput("intervention_info3"),
-                           #textOutput("intervention_info4"), #COUGAR
+                           #textOutput("intervention_info4"), #cougars
                            uiOutput("url1"),
                            uiOutput("url2"),
                            uiOutput("url3"),
@@ -204,10 +204,10 @@ data_tab <- tabPanel(title = "Data",
                            uiOutput("url1.3"),
                            uiOutput("url2.3"),
                            uiOutput("url3.3"), 
-                           uiOutput("url4.3")#, #COUGAR (just the comma)
-                           #uiOutput("url1.4"), #COUGAR
-                           #uiOutput("url2.4"), #COUGAR
-                           #uiOutput("url3.4") #COUGAR
+                           uiOutput("url4.3")#, #cougars (just the comma)
+                           #uiOutput("url1.4"), #cougars
+                           #uiOutput("url2.4"), #cougars
+                           #uiOutput("url3.4") #cougars
                          )
                          
                          
@@ -441,7 +441,7 @@ Here are some ways to incorporate high structure in your course: "
   })
   
   
-  #   ## COUGARS -- ADDITIONAL VARIABLE
+  #   ## cougars -- ADDITIONAL VARIABLE
   #   reactive_function4 <- eventReactive(input$minoritized_how, {
   #     req(input$minoritized_how == "Additional Variable")
   #   })
@@ -482,10 +482,10 @@ Here are some ways to incorporate high structure in your course: "
     
 ##### Disaggregate data and display violin plot #####
   
-#Data disaggregated by students majoritized and minoritized on basis of race when no course quarter selected -- WRONG it's when a Q is selected
   
   output$plot1 <- renderPlot({
     if (input$quarter != "None selected") {
+      #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
       if (input$minoritized_how == "Racially Minoritized") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -544,7 +544,7 @@ Here are some ways to incorporate high structure in your course: "
                               'Did not indicate'
                             )) 
       }
-      #Data disaggregated by students gender when no course quarter selected
+      #Data disaggregated by students gender when specific course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -601,7 +601,7 @@ Here are some ways to incorporate high structure in your course: "
                               'Did not indicate'
                             )) 
       }
-      #Data disaggregated by students first generation status when no course quarter selected
+      #Data disaggregated by students first generation status when specific course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -658,7 +658,7 @@ Here are some ways to incorporate high structure in your course: "
                             ))
       }
       
-      # #COUGARS -- Data disaggregated by additional variable when no course quarter selected
+      # #cougars -- Data disaggregated by additional variable when specific course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
       #   data.years.names.substitute.subset <-
       #     class.data1 %>%
@@ -715,7 +715,7 @@ Here are some ways to incorporate high structure in your course: "
       #                       ))
       # }
       
-      #Data not disaggregated when no course quarter selected
+      #Data not disaggregated when specific course quarter selected
       else {
         data.years.names.substitute.subset <- class.data1 %>%
           filter(
@@ -761,7 +761,7 @@ Here are some ways to incorporate high structure in your course: "
       
     }
     else {
-      #Data disaggregated by students majoritized and minoritized on basis of race when specific course quarter selected
+      #Data disaggregated by students majoritized and minoritized on basis of race when no quarter selected
       if (input$minoritized_how == "Racially Minoritized") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -817,7 +817,7 @@ Here are some ways to incorporate high structure in your course: "
                             ))
       }
       
-      #Data disaggregated by students gender when specific course quarter selected
+      #Data disaggregated by students gender when no course quarter selected
       else if (input$minoritized_how == "Binary Gender") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -872,7 +872,7 @@ Here are some ways to incorporate high structure in your course: "
                             ))
       }
       
-      #Data disaggregated by students first generation status when specific course quarter selected
+      #Data disaggregated by students first generation status when no course quarter selected
       else if (input$minoritized_how == "First Generation Status") {
         data.years.names.substitute.subset <-
           class.data1 %>%
@@ -926,7 +926,7 @@ Here are some ways to incorporate high structure in your course: "
                             ))
       }
       
-      # #COUGAR -- Data disaggregated by additional varaible when specific course quarter selected
+      # #cougars -- Data disaggregated by additional variable when no course quarter selected
       # else if (input$minoritized_how == "Additional Variable") {
       #   data.years.names.substitute.subset <-
       #     class.data1 %>%
@@ -980,7 +980,7 @@ Here are some ways to incorporate high structure in your course: "
       #                           ))
       # }
       
-      #Data not disaggregated when specific course quarter selected
+      #Data not disaggregated when no course quarter selected
       else {
         data.years.names.substitute.subset <- class.data1 %>%
           filter(course == input$course,
